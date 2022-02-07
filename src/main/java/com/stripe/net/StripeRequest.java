@@ -134,7 +134,7 @@ public class StripeRequest {
       return null;
     }
 
-    return FormEncoder.createHttpContent(params);
+    return JsonEncoder.createHttpContent(params);
   }
 
   private static HttpHeaders buildHeaders(ApiResource.RequestMethod method, RequestOptions options)

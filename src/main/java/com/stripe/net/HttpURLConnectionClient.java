@@ -12,9 +12,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.Cleanup;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class HttpURLConnectionClient extends HttpClient {
+
+  static {
+    ConsoleHandler handler = new ConsoleHandler();
+    handler.setLevel(Level.FINEST);
+    Logger log = LogManager.getLogManager().getLogger("");
+    log.addHandler(handler);
+    log.setLevel(Level.FINEST);
+  }
+
   /** Initializes a new instance of the {@link HttpURLConnectionClient}. */
   public HttpURLConnectionClient() {
     super();
@@ -122,6 +138,7 @@ public class HttpURLConnectionClient extends HttpClient {
       conn.setRequestProperty("Content-Type", request.content().contentType());
 
       @Cleanup OutputStream output = conn.getOutputStream();
+      log.debug("request content={}", new String(request.content().byteArrayContent(), ApiResource.CHARSET));
       output.write(request.content().byteArrayContent());
     }
 

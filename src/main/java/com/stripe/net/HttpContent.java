@@ -26,7 +26,7 @@ public class HttpContent {
   /** The value of the {@code Content-Type} header. */
   String contentType;
 
-  private HttpContent(byte[] byteArrayContent, String contentType) {
+  public HttpContent(byte[] byteArrayContent, String contentType) {
     this.byteArrayContent = byteArrayContent;
     this.contentType = contentType;
   }

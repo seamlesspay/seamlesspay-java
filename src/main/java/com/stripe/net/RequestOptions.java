@@ -3,6 +3,7 @@ package com.stripe.net;
 import com.stripe.Stripe;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
+import java.util.Base64;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 
@@ -52,7 +53,7 @@ public class RequestOptions {
       int maxNetworkRetries,
       Proxy connectionProxy,
       PasswordAuthentication proxyCredential) {
-    this.apiKey = apiKey;
+    this.apiKey = (apiKey == null) ? null : Base64.getEncoder().encodeToString(apiKey.getBytes(ApiResource.CHARSET));
     this.clientId = clientId;
     this.idempotencyKey = idempotencyKey;
     this.stripeAccount = stripeAccount;

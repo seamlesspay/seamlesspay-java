@@ -15,8 +15,7 @@ public class MultipartProcessor {
   private PrintWriter writer;
 
   /** Constructs a new multipart body builder. */
-  public MultipartProcessor(OutputStream outputStream, String boundary, Charset charset)
-      throws IOException {
+  public MultipartProcessor(OutputStream outputStream, String boundary, Charset charset) {
     this.boundary = boundary;
 
     this.outputStream = outputStream;

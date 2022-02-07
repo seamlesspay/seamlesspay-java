@@ -6,19 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class SPAPI {
+
   public static final int DEFAULT_CONNECT_TIMEOUT = 30 * 1000;
   public static final int DEFAULT_READ_TIMEOUT = 80 * 1000;
 
-  public static final String API_VERSION = "2020-08-27";
-  public static final String CONNECT_API_BASE = "https://connect.stripe.com";
-  public static final String LIVE_API_BASE = "https://api.stripe.com";
-  public static final String UPLOAD_API_BASE = "https://files.stripe.com";
-  public static final String VERSION = "20.98.0";
+  public static final String API_VERSION = "2020-08-01";
+  public static final String PROD_API_BASE = "https://api.seamlesspay.com";
+  public static final String SANDBOX_API_BASE = "https://sandbox.seamlesspay.com";
+  public static final String DEV_API_BASE = "https://api.seamlesspay.dev";
+  public static final String VERSION = "0.0.1";
 
   public static volatile String apiKey;
-  public static volatile String clientId;
-  public static volatile boolean enableTelemetry = true;
-  public static volatile String partnerId;
+//  public static volatile String clientId;
+//  public static volatile boolean enableTelemetry = true;
+//  public static volatile String partnerId;
 
   // Note that URLConnection reserves the value of 0 to mean "infinite
   // timeout", so we use -1 here to represent an unset value which should
@@ -28,9 +29,8 @@ public abstract class SPAPI {
 
   private static volatile int maxNetworkRetries = 0;
 
-  private static volatile String apiBase = LIVE_API_BASE;
-  private static volatile String connectBase = CONNECT_API_BASE;
-  private static volatile String uploadBase = UPLOAD_API_BASE;
+  private static volatile String apiBase = SANDBOX_API_BASE;
+//  private static volatile String uploadBase = SANDBOX_API_BASE;
   private static volatile Proxy connectionProxy = null;
   private static volatile PasswordAuthentication proxyCredential = null;
 
@@ -52,25 +52,25 @@ public abstract class SPAPI {
    * (FOR TESTING ONLY) If you'd like your OAuth requests to hit your own (mocked) server, you can
    * set this up here by overriding the base Connect URL.
    */
-  public static void overrideConnectBase(final String overriddenConnectBase) {
-    connectBase = overriddenConnectBase;
-  }
-
-  public static String getConnectBase() {
-    return connectBase;
-  }
+//  public static void overrideConnectBase(final String overriddenConnectBase) {
+//    connectBase = overriddenConnectBase;
+//  }
+//
+//  public static String getConnectBase() {
+//    return connectBase;
+//  }
 
   /**
    * (FOR TESTING ONLY) If you'd like your upload requests to hit your own (mocked) server, you can
    * set this up here by overriding the base api URL.
    */
-  public static void overrideUploadBase(final String overriddenUploadBase) {
-    uploadBase = overriddenUploadBase;
-  }
-
-  public static String getUploadBase() {
-    return uploadBase;
-  }
+//  public static void overrideUploadBase(final String overriddenUploadBase) {
+//    uploadBase = overriddenUploadBase;
+//  }
+//
+//  public static String getUploadBase() {
+//    return uploadBase;
+//  }
 
   /**
    * Set proxy to tunnel all Stripe connections.
