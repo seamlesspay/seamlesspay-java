@@ -22,10 +22,13 @@ import com.stripe.model.StripeError;
 import com.stripe.model.StripeObject;
 import com.stripe.model.StripeObjectInterface;
 import com.stripe.model.oauth.OAuthError;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+@Slf4j
 public class LiveStripeResponseGetter implements StripeResponseGetter {
   private final HttpClient httpClient;
 
