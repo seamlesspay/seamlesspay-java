@@ -70,6 +70,7 @@ public class LiveStripeResponseGetter implements StripeResponseGetter {
     try {
       resource = ApiResource.GSON.fromJson(responseBody, clazz);
     } catch (JsonSyntaxException e) {
+      log.debug("failed to parse response={}", responseBody, e);
       raiseMalformedJsonError(responseBody, responseCode, requestId, e);
     }
 

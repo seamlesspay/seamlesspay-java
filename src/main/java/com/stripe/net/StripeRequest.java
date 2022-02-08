@@ -149,7 +149,7 @@ public class StripeRequest {
 
     // Authorization
     String apiKey = options.getApiKey();
-    if (apiKey == null) {
+    if (apiKey == null || apiKey.isEmpty()) {
       throw new AuthenticationException(
           "No API key provided. Set your API key using `SPAPI.apiKey = \"<API-KEY>\"`. You can "
               + "get API keys from the Seamless Payment Dashboard. See "
@@ -157,21 +157,9 @@ public class StripeRequest {
           null,
           null,
           0);
-    } else if (apiKey.isEmpty()) {
-      throw new AuthenticationException(
-          "Your API key is invalid, as it is an empty string. You can double-check your API key "
-              + "from the Stripe Dashboard. See "
-              + "https://stripe.com/docs/api/authentication for details or contact support at "
-              + "https://support.stripe.com/email if you have any questions.",
-          null,
-          null,
-          0);
     } else if (StringUtils.containsWhitespace(apiKey)) {
       throw new AuthenticationException(
-          "Your API key is invalid, as it contains whitespace. You can double-check your API key "
-              + "from the Stripe Dashboard. See "
-              + "https://stripe.com/docs/api/authentication for details or contact support at "
-              + "https://support.stripe.com/email if you have any questions.",
+          "Your API key is invalid, as it contains whitespace.",
           null,
           null,
           0);
@@ -179,18 +167,18 @@ public class StripeRequest {
     headerMap.put("Authorization", Arrays.asList(String.format("Bearer %s", apiKey)));
 
     // Stripe-Version
-    if (options.getStripeVersionOverride() != null) {
-      headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersionOverride()));
-    } else if (options.getStripeVersion() != null) {
-      headerMap.put("Stripe-Version", Arrays.asList(options.getStripeVersion()));
+    if (options.getSeamlessPayVersionOverride() != null) {
+      headerMap.put("API-Version", Arrays.asList(options.getSeamlessPayVersionOverride()));
+    } else if (options.getSeamlessPayVersion() != null) {
+      headerMap.put("API-Version", Arrays.asList(options.getSeamlessPayVersion()));
     } else {
       throw new IllegalStateException(
-          "Either `stripeVersion` or `stripeVersionOverride` value must be set.");
+          "Either `SeamlessPayVersion` or `SeamlessPayVersionOverride` value must be set.");
     }
 
     // Stripe-Account
-    if (options.getStripeAccount() != null) {
-      headerMap.put("Stripe-Account", Arrays.asList(options.getStripeAccount()));
+    if (options.getSeamlessPayAccount() != null) {
+      headerMap.put("SeamlessPay-Account", Arrays.asList(options.getSeamlessPayAccount()));
     }
 
     // Idempotency-Key

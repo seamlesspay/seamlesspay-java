@@ -16,8 +16,8 @@ public class RequestOptionsTest extends BaseStripeTest {
   @Test
   public void testApiVersion() throws StripeException {
     final RequestOptions options = RequestOptions.builder().build();
-    assertEquals(Stripe.API_VERSION, options.getStripeVersion());
-    assertNull(options.getStripeVersionOverride());
+    assertEquals(Stripe.API_VERSION, options.getSeamlessPayVersion());
+    assertNull(options.getSeamlessPayVersionOverride());
 
     final Balance balance = Balance.retrieve(options);
     final StripeResponse response = balance.getLastResponse();

@@ -4,22 +4,23 @@ package com.stripe.model;
 import com.google.gson.annotations.SerializedName;
 import com.seamlesspay.SPAPI;
 import com.stripe.exception.StripeException;
-import com.stripe.model.radar.Rule;
+import com.stripe.net.ApiRequestParams;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.*;
+import com.stripe.param.ChargeCaptureParams;
+import com.stripe.param.ChargeRetrieveParams;
+import com.stripe.param.ChargeUpdateParams;
+import com.stripe.param.SPChargeCreateParams;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class SPCharge extends ApiResource implements BalanceTransactionSource {
+public class SPCharge extends ApiResource {
 
   public static final String CHARGES_URL_PATH = "/charges";
 
@@ -72,7 +73,7 @@ public class SPCharge extends ApiResource implements BalanceTransactionSource {
    * Expiration Date
    */
   @SerializedName("expDate")
-  private Date expDate;
+  private String expDate;
 
   /**
    * IP Address
@@ -144,40 +145,10 @@ public class SPCharge extends ApiResource implements BalanceTransactionSource {
   private SPCreditCardVerification verification;
 
 
-  /**
-   * Returns a list of charges you’ve previously created. The charges are returned in sorted order,
-   * with the most recent charges appearing first.
-   */
-  public static ChargeCollection list(Map<String, Object> params) throws StripeException {
-    return list(params, (RequestOptions) null);
-  }
-
-  /**
-   * Returns a list of charges you’ve previously created. The charges are returned in sorted order,
-   * with the most recent charges appearing first.
-   */
-  public static ChargeCollection list(Map<String, Object> params, RequestOptions options)
+  public static SPChargeCollection list(RequestOptions options)
       throws StripeException {
     String url = String.format("%s%s", SPAPI.getApiBase(), CHARGES_URL_PATH);
-    return ApiResource.requestCollection(url, params, ChargeCollection.class, options);
-  }
-
-  /**
-   * Returns a list of charges you’ve previously created. The charges are returned in sorted order,
-   * with the most recent charges appearing first.
-   */
-  public static ChargeCollection list(ChargeListParams params) throws StripeException {
-    return list(params, (RequestOptions) null);
-  }
-
-  /**
-   * Returns a list of charges you’ve previously created. The charges are returned in sorted order,
-   * with the most recent charges appearing first.
-   */
-  public static ChargeCollection list(ChargeListParams params, RequestOptions options)
-      throws StripeException {
-    String url = String.format("%s%s", SPAPI.getApiBase(), CHARGES_URL_PATH);
-    return ApiResource.requestCollection(url, params, ChargeCollection.class, options);
+    return ApiResource.requestSPCollection(url, (ApiRequestParams) null, SPChargeCollection.class, options);
   }
 
   /**
@@ -220,6 +191,7 @@ public class SPCharge extends ApiResource implements BalanceTransactionSource {
    */
   public static SPCharge create(SPChargeCreateParams params, RequestOptions options)
       throws StripeException {
+    // TODO replace with create(params.toMap()) to avoid code-duplication
     String url = String.format("%s%s", SPAPI.getApiBase(), CHARGES_URL_PATH);
     return ApiResource.request(RequestMethod.POST, url, params, SPCharge.class, options);
   }

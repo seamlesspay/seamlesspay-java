@@ -102,8 +102,8 @@ public class StripeRequestTest extends BaseStripeTest {
         RequestOptions.builder()
             .setApiKey("sk_override")
             .setIdempotencyKey("idempotency_key")
-            .setStripeAccount("acct_456")
-            .setStripeVersionOverride("2012-12-21")
+            .setSeamlessPayAccount("acct_456")
+            .setSeamlessPayVersionOverride("2012-12-21")
             .build();
     StripeRequest request =
         new StripeRequest(ApiResource.RequestMethod.GET, "http://example.com/get", null, options);
