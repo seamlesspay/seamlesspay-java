@@ -151,10 +151,9 @@ public class StripeRequest {
     String apiKey = options.getApiKey();
     if (apiKey == null) {
       throw new AuthenticationException(
-          "No API key provided. Set your API key using `Stripe.apiKey = \"<API-KEY>\"`. You can "
-              + "generate API keys from the Stripe Dashboard. See "
-              + "https://stripe.com/docs/api/authentication for details or contact support at "
-              + "https://support.stripe.com/email if you have any questions.",
+          "No API key provided. Set your API key using `SPAPI.apiKey = \"<API-KEY>\"`. You can "
+              + "get API keys from the Seamless Payment Dashboard. See "
+              + "https://docs.seamlesspay.com/2020-08-01#section/Authentication for details",
           null,
           null,
           0);

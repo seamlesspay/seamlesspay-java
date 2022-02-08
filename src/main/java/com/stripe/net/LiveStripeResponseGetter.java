@@ -18,6 +18,7 @@ import com.stripe.exception.oauth.InvalidScopeException;
 import com.stripe.exception.oauth.OAuthException;
 import com.stripe.exception.oauth.UnsupportedGrantTypeException;
 import com.stripe.exception.oauth.UnsupportedResponseTypeException;
+import com.stripe.model.SPNotAuthenticatedError;
 import com.stripe.model.StripeError;
 import com.stripe.model.StripeObject;
 import com.stripe.model.StripeObjectInterface;
@@ -164,8 +165,21 @@ public class LiveStripeResponseGetter implements StripeResponseGetter {
   }
 
   private static void handleApiError(StripeResponse response) throws StripeException {
+
+    log.debug("handling error from response={}", response);
+    switch (response.code()) {
+      case 401:
+        try {
+          SPNotAuthenticatedError error = ApiResource.GSON.fromJson(response.body(), SPNotAuthenticatedError.class);
+          log.debug("extracted error object={}", error);
+          String message = String.format("Not authenticated error, message=%s", error.getMessage());
+          throw new ApiException(message, response.requestId(), null, response.code(), null);
+        } catch (JsonSyntaxException e) {
+          raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);
+        }
+    }
+
     StripeError error = null;
-    StripeException exception = null;
 
     try {
       JsonObject jsonObject =
@@ -180,6 +194,7 @@ public class LiveStripeResponseGetter implements StripeResponseGetter {
 
     error.setLastResponse(response);
 
+    StripeException exception = null;
     switch (response.code()) {
       case 400:
       case 404:
