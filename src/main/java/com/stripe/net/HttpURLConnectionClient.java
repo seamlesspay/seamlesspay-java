@@ -23,12 +23,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HttpURLConnectionClient extends HttpClient {
 
+  private static boolean NETWORK_LOGS_ENABLED = false;
+
   static {
-    ConsoleHandler handler = new ConsoleHandler();
-    handler.setLevel(Level.FINEST);
-    Logger log = LogManager.getLogManager().getLogger("");
-    log.addHandler(handler);
-    log.setLevel(Level.FINEST);
+    if (NETWORK_LOGS_ENABLED) {
+      ConsoleHandler handler = new ConsoleHandler();
+      handler.setLevel(Level.FINEST);
+      Logger log = LogManager.getLogManager().getLogger("");
+      log.addHandler(handler);
+      log.setLevel(Level.FINEST);
+    }
   }
 
   /** Initializes a new instance of the {@link HttpURLConnectionClient}. */
