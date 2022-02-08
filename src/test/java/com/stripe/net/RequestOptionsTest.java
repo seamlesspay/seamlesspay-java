@@ -18,8 +18,8 @@ public class RequestOptionsTest {
             .setApiKey("sk_foo")
             .setClientId("123")
             .setIdempotencyKey("123")
-            .setStripeAccount("acct_bar")
-            .setStripeVersionOverride("2015-05-05")
+            .setSeamlessPayAccount("acct_bar")
+            .setSeamlessPayVersionOverride("2015-05-05")
             .setConnectTimeout(100)
             .setReadTimeout(100)
             .setConnectionProxy(
@@ -32,11 +32,11 @@ public class RequestOptionsTest {
     // only api keys and account should persist
     // assuming these are stable across a given stripe integration
     assertEquals("sk_foo", optsRebuilt.getApiKey());
-    assertEquals("acct_bar", optsRebuilt.getStripeAccount());
+    assertEquals("acct_bar", optsRebuilt.getSeamlessPayAccount());
 
     assertNull(optsRebuilt.getClientId());
     assertNull(optsRebuilt.getIdempotencyKey());
-    assertNull(optsRebuilt.getStripeVersionOverride());
+    assertNull(optsRebuilt.getSeamlessPayVersionOverride());
     assertEquals(Stripe.DEFAULT_CONNECT_TIMEOUT, optsRebuilt.getConnectTimeout());
     assertEquals(Stripe.DEFAULT_READ_TIMEOUT, optsRebuilt.getReadTimeout());
     assertEquals(Stripe.getConnectionProxy(), optsRebuilt.getConnectionProxy());
@@ -48,12 +48,12 @@ public class RequestOptionsTest {
     String stripeVersionOverride = "2015-05-05";
 
     RequestOptions.RequestOptionsBuilder builder =
-        RequestOptions.builder().setStripeVersionOverride(stripeVersionOverride);
+        RequestOptions.builder().setSeamlessPayVersionOverride(stripeVersionOverride);
 
-    assertEquals(stripeVersionOverride, builder.getStripeVersionOverride());
+    assertEquals(stripeVersionOverride, builder.getSeamlessPayVersionOverride());
 
     builder.clearStripeVersionOverride();
-    assertNull(builder.getStripeVersionOverride());
+    assertNull(builder.getSeamlessPayVersionOverride());
   }
 
   @Test
@@ -67,8 +67,8 @@ public class RequestOptionsTest {
             .setApiKey("sk_foo")
             .setClientId("123")
             .setIdempotencyKey("123")
-            .setStripeAccount("acct_bar")
-            .setStripeVersionOverride("2015-05-05")
+            .setSeamlessPayAccount("acct_bar")
+            .setSeamlessPayVersionOverride("2015-05-05")
             .setConnectTimeout(100)
             .setReadTimeout(200)
             .setConnectionProxy(connectionProxy)
@@ -80,8 +80,8 @@ public class RequestOptionsTest {
             .setApiKey("sk_foo")
             .setClientId("123")
             .setIdempotencyKey("123")
-            .setStripeAccount("acct_bar")
-            .setStripeVersionOverride("2015-05-05")
+            .setSeamlessPayAccount("acct_bar")
+            .setSeamlessPayVersionOverride("2015-05-05")
             .setConnectTimeout(100)
             .setReadTimeout(200)
             .setConnectionProxy(connectionProxy)

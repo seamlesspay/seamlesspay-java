@@ -1,5 +1,6 @@
 package com.stripe.net;
 
+import com.seamlesspay.SPAPI;
 import com.stripe.Stripe;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
@@ -12,14 +13,16 @@ public class RequestOptions {
   private final String apiKey;
   private final String clientId;
   private final String idempotencyKey;
-  private final String stripeAccount;
-  /** Stripe version always set at {@link Stripe#API_VERSION}. */
-  private final String stripeVersion = Stripe.API_VERSION;
+  private final String seamlessPayAccount;
+
+  /** SeamlessPay version always set at {@link SPAPI#API_VERSION}. */
+  private final String seamlessPayVersion = SPAPI.API_VERSION;
+
   /**
-   * Stripe version override when made on behalf of others. This can be used when the returned
-   * response will not be deserialized into the current classes pinned to {@link Stripe#VERSION}.
+   * SeamlessPay version override when made on behalf of others. This can be used when the returned
+   * response will not be deserialized into the current classes pinned to {@link SPAPI#VERSION}.
    */
-  private final String stripeVersionOverride;
+  private final String seamlessPayVersionOverride;
 
   private final int connectTimeout;
   private final int readTimeout;
@@ -46,8 +49,8 @@ public class RequestOptions {
       String apiKey,
       String clientId,
       String idempotencyKey,
-      String stripeAccount,
-      String stripeVersionOverride,
+      String seamlessPayAccount,
+      String seamlessPayVersionOverride,
       int connectTimeout,
       int readTimeout,
       int maxNetworkRetries,
@@ -56,8 +59,8 @@ public class RequestOptions {
     this.apiKey = (apiKey == null) ? null : Base64.getEncoder().encodeToString(apiKey.getBytes(ApiResource.CHARSET));
     this.clientId = clientId;
     this.idempotencyKey = idempotencyKey;
-    this.stripeAccount = stripeAccount;
-    this.stripeVersionOverride = stripeVersionOverride;
+    this.seamlessPayAccount = seamlessPayAccount;
+    this.seamlessPayVersionOverride = seamlessPayVersionOverride;
     this.connectTimeout = connectTimeout;
     this.readTimeout = readTimeout;
     this.maxNetworkRetries = maxNetworkRetries;
@@ -77,16 +80,16 @@ public class RequestOptions {
     return idempotencyKey;
   }
 
-  public String getStripeAccount() {
-    return stripeAccount;
+  public String getSeamlessPayAccount() {
+    return seamlessPayAccount;
   }
 
-  public String getStripeVersion() {
-    return stripeVersion;
+  public String getSeamlessPayVersion() {
+    return seamlessPayVersion;
   }
 
-  public String getStripeVersionOverride() {
-    return stripeVersionOverride;
+  public String getSeamlessPayVersionOverride() {
+    return seamlessPayVersionOverride;
   }
 
   public int getReadTimeout() {
@@ -119,15 +122,15 @@ public class RequestOptions {
    * @return option builder.
    */
   public RequestOptionsBuilder toBuilder() {
-    return new RequestOptionsBuilder().setApiKey(this.apiKey).setStripeAccount(this.stripeAccount);
+    return new RequestOptionsBuilder().setApiKey(this.apiKey).setSeamlessPayAccount(this.seamlessPayAccount);
   }
 
   public static final class RequestOptionsBuilder {
     private String apiKey;
     private String clientId;
     private String idempotencyKey;
-    private String stripeAccount;
-    private String stripeVersionOverride;
+    private String seamlessPayAccount;
+    private String seamlessPayVersionOverride;
     private int connectTimeout;
     private int readTimeout;
     private int maxNetworkRetries;
@@ -255,21 +258,21 @@ public class RequestOptions {
       return this.idempotencyKey;
     }
 
-    public String getStripeAccount() {
-      return this.stripeAccount;
+    public String getSeamlessPayAccount() {
+      return this.seamlessPayAccount;
     }
 
-    public RequestOptionsBuilder setStripeAccount(String stripeAccount) {
-      this.stripeAccount = stripeAccount;
+    public RequestOptionsBuilder setSeamlessPayAccount(String seamlessPayAccount) {
+      this.seamlessPayAccount = seamlessPayAccount;
       return this;
     }
 
     public RequestOptionsBuilder clearStripeAccount() {
-      return setStripeAccount(null);
+      return setSeamlessPayAccount(null);
     }
 
-    public String getStripeVersionOverride() {
-      return this.stripeVersionOverride;
+    public String getSeamlessPayVersionOverride() {
+      return this.seamlessPayVersionOverride;
     }
 
     /**
@@ -280,17 +283,17 @@ public class RequestOptions {
      * scenario will result in deserialization error as the model classes have schema according to
      * the pinned {@link Stripe#API_VERSION} and not the {@code stripeVersionOverride}
      *
-     * @param stripeVersionOverride stripe version override which belongs to the client to make
+     * @param seamlessPayVersionOverride stripe version override which belongs to the client to make
      *     request on behalf of.
      * @return option builder
      */
-    public RequestOptionsBuilder setStripeVersionOverride(String stripeVersionOverride) {
-      this.stripeVersionOverride = normalizeStripeVersion(stripeVersionOverride);
+    public RequestOptionsBuilder setSeamlessPayVersionOverride(String seamlessPayVersionOverride) {
+      this.seamlessPayVersionOverride = normalizeStripeVersion(seamlessPayVersionOverride);
       return this;
     }
 
     public RequestOptionsBuilder clearStripeVersionOverride() {
-      return setStripeVersionOverride(null);
+      return setSeamlessPayVersionOverride(null);
     }
 
     /** Constructs a {@link RequestOptions} with the specified values. */
@@ -299,8 +302,8 @@ public class RequestOptions {
           normalizeApiKey(this.apiKey),
           normalizeClientId(this.clientId),
           normalizeIdempotencyKey(this.idempotencyKey),
-          normalizeStripeAccount(this.stripeAccount),
-          normalizeStripeVersion(this.stripeVersionOverride),
+          normalizeStripeAccount(this.seamlessPayAccount),
+          normalizeStripeVersion(this.seamlessPayVersionOverride),
           connectTimeout,
           readTimeout,
           maxNetworkRetries,

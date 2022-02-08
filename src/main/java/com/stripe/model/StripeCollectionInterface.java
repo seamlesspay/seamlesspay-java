@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface StripeCollectionInterface<T> extends StripeObjectInterface {
+
   List<T> getData();
 
   Boolean getHasMore();

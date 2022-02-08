@@ -1,4 +1,4 @@
-package com.stripe.functional.charge;
+package com.stripe.functional.seamlesspay.charge;
 
 import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;

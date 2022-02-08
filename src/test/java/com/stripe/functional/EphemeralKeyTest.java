@@ -28,7 +28,7 @@ public class EphemeralKeyTest extends BaseStripeTest {
     // Passing the same API version here to comply with stripe-mock `-strict-version-check`
     // flag--it errors on passing API version different from that in OpenAPI spec.
     final RequestOptions options =
-        RequestOptions.builder().setStripeVersionOverride(Stripe.API_VERSION).build();
+        RequestOptions.builder().setSeamlessPayVersionOverride(Stripe.API_VERSION).build();
 
     final EphemeralKey key = EphemeralKey.create(params, options);
 
@@ -56,7 +56,7 @@ public class EphemeralKeyTest extends BaseStripeTest {
             .build();
 
     final RequestOptions options =
-        RequestOptions.builder().setStripeVersionOverride(Stripe.API_VERSION).build();
+        RequestOptions.builder().setSeamlessPayVersionOverride(Stripe.API_VERSION).build();
 
     final EphemeralKey key = EphemeralKey.create(createParams, options);
 
@@ -76,7 +76,7 @@ public class EphemeralKeyTest extends BaseStripeTest {
     params.put("customer", "cus_123");
 
     final RequestOptions options = RequestOptions.getDefault();
-    assertNull(options.getStripeVersionOverride());
+    assertNull(options.getSeamlessPayVersionOverride());
 
     assertThrows(
         IllegalArgumentException.class,
@@ -102,7 +102,7 @@ public class EphemeralKeyTest extends BaseStripeTest {
     // Passing the same API version here to comply with stripe-mock `-strict-version-check`
     // flag--it errors on passing API version different from that in OpenAPI spec.
     final RequestOptions options =
-        RequestOptions.builder().setStripeVersionOverride(Stripe.API_VERSION).build();
+        RequestOptions.builder().setSeamlessPayVersionOverride(Stripe.API_VERSION).build();
 
     final EphemeralKey key = EphemeralKey.create(params, options);
 
