@@ -18,10 +18,7 @@ import com.stripe.exception.oauth.InvalidScopeException;
 import com.stripe.exception.oauth.OAuthException;
 import com.stripe.exception.oauth.UnsupportedGrantTypeException;
 import com.stripe.exception.oauth.UnsupportedResponseTypeException;
-import com.stripe.model.SPNotAuthenticatedError;
-import com.stripe.model.StripeError;
-import com.stripe.model.StripeObject;
-import com.stripe.model.StripeObjectInterface;
+import com.stripe.model.*;
 import com.stripe.model.oauth.OAuthError;
 import lombok.extern.slf4j.Slf4j;
 
@@ -177,6 +174,18 @@ public class LiveStripeResponseGetter implements StripeResponseGetter {
         } catch (JsonSyntaxException e) {
           raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);
         }
+        break;
+      case 422:
+        try {
+          SPUnprocessableError error = ApiResource.GSON.fromJson(response.body(), SPUnprocessableError.class);
+          log.debug("extracted error object={}", error);
+          String message = String.format("Unprocessable error, message=%s", error.getMessage());
+          throw new ApiException(message, response.requestId(), null, response.code(), null);
+        } catch (JsonSyntaxException e) {
+          raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);
+        }
+        break;
+
     }
 
     StripeError error = null;
