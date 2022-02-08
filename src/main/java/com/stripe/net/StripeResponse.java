@@ -1,6 +1,9 @@
 package com.stripe.net;
 
+import lombok.ToString;
+
 /** A response from Stripe's API, with body represented as a String. */
+@ToString
 public class StripeResponse extends AbstractStripeResponse<String> {
   /**
    * Initializes a new instance of the {@link StripeResponse} class.
