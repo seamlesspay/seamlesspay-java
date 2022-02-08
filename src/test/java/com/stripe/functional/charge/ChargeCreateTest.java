@@ -12,11 +12,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ChargeCreateTest {
+class ChargeCreateTest {
 
   @InjectMocks
   private SPAPI api;
@@ -54,5 +53,25 @@ public class ChargeCreateTest {
 
     //then
     assertTrue(ex.getMessage().startsWith("Not authenticated error"));
+    assertEquals(401, ex.getStatusCode());
+  }
+
+  @Test
+  void testReturns422IfMissingRequiredFieldToken() {
+    //given
+    SPChargeCreateParams params = SPChargeCreateParams.builder()
+      .amount("1.00")
+      .build();
+
+    RequestOptions requestOptions = RequestOptions.builder()
+      .setApiKey("sk_01EWB3GM26X5FE81HQDJ01YK0Y")
+      .build();
+
+    //when
+    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.create(params, requestOptions));
+
+    //then
+    assertTrue(ex.getMessage().startsWith("Unprocessable error"));
+    assertEquals(422, ex.getStatusCode());
   }
 }
