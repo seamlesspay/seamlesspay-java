@@ -85,6 +85,21 @@ class ChargeUpdateTest {
   }
 
   @Test
+  void testReturns404OnNotExistingTransactionId() {
+    //given
+    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
+    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount("1.00").build();
+
+    //when
+    SPCharge spCharge = new SPCharge();
+    spCharge.setId("TR_1234567890KMBYB64KRMFPQN6W");
+    ApiException ex = assertThrows(ApiException.class, () -> spCharge.update(params, requestOptions));
+
+    //then
+    assertEquals(404, ex.getStatusCode());
+  }
+
+  @Test
   void testReturns422IfMissingRequiredField() throws StripeException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
