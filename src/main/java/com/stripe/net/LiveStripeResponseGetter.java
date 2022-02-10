@@ -176,6 +176,16 @@ public class LiveStripeResponseGetter implements StripeResponseGetter {
           raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);
         }
         break;
+      case 404:
+        try {
+          SPNotFoundError error = ApiResource.GSON.fromJson(response.body(), SPNotFoundError.class);
+          log.debug("extracted error object={}", error);
+          String message = String.format("Not found error, message=%s", error.getMessage());
+          throw new ApiException(message, response.requestId(), null, response.code(), null);
+        } catch (JsonSyntaxException e) {
+          raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);
+        }
+        break;
       case 422:
         try {
           SPUnprocessableError error = ApiResource.GSON.fromJson(response.body(), SPUnprocessableError.class);

@@ -197,34 +197,34 @@ public class SPCharge extends ApiResource {
   }
 
   /**
-   * Retrieves the details of a charge that has previously been created. Supply the unique charge ID
-   * that was returned from your previous request, and Stripe will return the corresponding charge
+   * Retrieves the details of a charge that has previously been created. Supply the transaction ID
+   * that was returned from your previous request, and SeamlessPay will return the corresponding charge
    * information. The same information is returned when creating or refunding the charge.
    */
-  public static SPCharge retrieve(String charge) throws StripeException {
-    return retrieve(charge, (Map<String, Object>) null, (RequestOptions) null);
+  public static SPCharge retrieve(String transactionId) throws StripeException {
+    return retrieve(transactionId, (Map<String, Object>) null, (RequestOptions) null);
   }
 
   /**
-   * Retrieves the details of a charge that has previously been created. Supply the unique charge ID
-   * that was returned from your previous request, and Stripe will return the corresponding charge
+   * Retrieves the details of a charge that has previously been created. Supply the unique transaction ID
+   * that was returned from your previous request, and SeamlessPay will return the corresponding charge
    * information. The same information is returned when creating or refunding the charge.
    */
-  public static SPCharge retrieve(String charge, RequestOptions options) throws StripeException {
-    return retrieve(charge, (Map<String, Object>) null, options);
+  public static SPCharge retrieve(String transactionId, RequestOptions options) throws StripeException {
+    return retrieve(transactionId, (Map<String, Object>) null, options);
   }
 
   /**
-   * Retrieves the details of a charge that has previously been created. Supply the unique charge ID
-   * that was returned from your previous request, and Stripe will return the corresponding charge
+   * Retrieves the details of a charge that has previously been created. Supply the unique transaction ID
+   * that was returned from your previous request, and SeamlessPay will return the corresponding charge
    * information. The same information is returned when creating or refunding the charge.
    */
-  public static SPCharge retrieve(String charge, Map<String, Object> params, RequestOptions options)
+  public static SPCharge retrieve(String transactionId, Map<String, Object> params, RequestOptions options)
       throws StripeException {
     String url =
         String.format(
             "%s%s",
-            SPAPI.getApiBase(), String.format("/v1/charges/%s", ApiResource.urlEncodeId(charge)));
+            SPAPI.getApiBase(), String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(transactionId)));
     return ApiResource.request(RequestMethod.GET, url, params, SPCharge.class, options);
   }
 
