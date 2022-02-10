@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChargeCreateTest {
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "TKN_01EXMB975XXG1XA3MATBNBR4QF";
+  public static final String VALID_TOKEN = "tok_mastercard";
 
   @InjectMocks
   private SPAPI api;

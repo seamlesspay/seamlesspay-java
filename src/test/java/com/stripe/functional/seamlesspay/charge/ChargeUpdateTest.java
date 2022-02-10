@@ -119,17 +119,18 @@ class ChargeUpdateTest {
   void testUpdatesChargeIfSuccess() throws StripeException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPCharge existingCharge = SPCharge.retrieve("TR_01FVFJ0XX7KMBYB64KRMFPQN6W", requestOptions);
+    SPCharge existingCharge = SPCharge.retrieve("TR_01FVJXHT64V8X632R0HCMJXMEM", requestOptions);
 
     double currentAmount = Double.parseDouble(existingCharge.getAmount());
     double newAmount = currentAmount + 1;
     log.info("current amount={} new={}", currentAmount, newAmount);
 
     //when
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount("" + currentAmount).build();
+    String newAmountString = String.format(java.util.Locale.US, "%.2f", newAmount);
+    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount(newAmountString).build();
     SPCharge updatedCharge = existingCharge.update(params, requestOptions);
 
     //then
-    assertEquals("" + newAmount, updatedCharge.getAmount());
+    assertEquals(newAmountString, updatedCharge.getAmount());
   }
 }

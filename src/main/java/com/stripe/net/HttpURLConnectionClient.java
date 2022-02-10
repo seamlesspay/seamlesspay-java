@@ -56,7 +56,8 @@ public class HttpURLConnectionClient extends HttpClient {
       final int responseCode = conn.getResponseCode();
 
       final HttpHeaders headers = HttpHeaders.of(conn.getHeaderFields());
-      log.debug("response: code={}, headers={}", responseCode, headers);
+      log.debug("response: code={}", responseCode);
+      log.trace("response: headers={}", headers);
 
       final InputStream responseStream =
           (responseCode >= 200 && responseCode < 300)
