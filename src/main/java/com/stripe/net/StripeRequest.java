@@ -18,6 +18,9 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
+import static com.stripe.net.ApiResource.RequestMethod.POST;
+import static com.stripe.net.ApiResource.RequestMethod.PUT;
+
 /** A request to Stripe's API. */
 @Value
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -112,7 +115,7 @@ public class StripeRequest {
     URL specUrl = new URL(spec);
     String specQueryString = specUrl.getQuery();
 
-    if ((method != ApiResource.RequestMethod.POST) && (params != null)) {
+    if ((method != POST) && (params != null)) {
       String queryString = FormEncoder.createQueryString(params);
 
       if (queryString != null && !queryString.isEmpty()) {
@@ -130,7 +133,7 @@ public class StripeRequest {
 
   private static HttpContent buildContent(
       ApiResource.RequestMethod method, Map<String, Object> params) throws IOException {
-    if (method != ApiResource.RequestMethod.POST) {
+    if (method != POST && method != PUT) {
       return null;
     }
 
@@ -184,7 +187,7 @@ public class StripeRequest {
     // Idempotency-Key
     if (options.getIdempotencyKey() != null) {
       headerMap.put("Idempotency-Key", Arrays.asList(options.getIdempotencyKey()));
-    } else if (method == ApiResource.RequestMethod.POST) {
+    } else if (method == POST) {
       headerMap.put("Idempotency-Key", Arrays.asList(UUID.randomUUID().toString()));
     }
 

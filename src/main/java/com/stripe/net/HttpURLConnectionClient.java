@@ -56,6 +56,7 @@ public class HttpURLConnectionClient extends HttpClient {
       final int responseCode = conn.getResponseCode();
 
       final HttpHeaders headers = HttpHeaders.of(conn.getHeaderFields());
+      log.debug("response: code={}, headers={}", responseCode, headers);
 
       final InputStream responseStream =
           (responseCode >= 200 && responseCode < 300)
@@ -132,14 +133,18 @@ public class HttpURLConnectionClient extends HttpClient {
     conn.setReadTimeout(request.options().getReadTimeout());
     conn.setUseCaches(false);
     for (Map.Entry<String, List<String>> entry : getHeaders(request).map().entrySet()) {
-      conn.setRequestProperty(entry.getKey(), String.join(",", entry.getValue()));
+      String value = String.join(",", entry.getValue());
+      log.trace("setting header: name={}; value={}", entry.getKey(), value);
+      conn.setRequestProperty(entry.getKey(), value);
     }
 
     conn.setRequestMethod(request.method().name());
+    log.debug("request method={}", request.method().name());
 
     if (request.content() != null) {
       conn.setDoOutput(true);
       conn.setRequestProperty("Content-Type", request.content().contentType());
+      log.debug("setting header: name={}; value={}", "Content-Type", request.content().contentType());
 
       @Cleanup OutputStream output = conn.getOutputStream();
       log.debug("request content={}", new String(request.content().byteArrayContent(), ApiResource.CHARSET));

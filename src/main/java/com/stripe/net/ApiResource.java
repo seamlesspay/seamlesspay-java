@@ -107,6 +107,7 @@ public abstract class ApiResource extends StripeObject {
   public enum RequestMethod {
     GET,
     POST,
+    PUT,
     DELETE
   }
 
@@ -135,8 +136,8 @@ public abstract class ApiResource extends StripeObject {
     if (id == null) {
       throw new InvalidRequestException(
           "Invalid null ID found for url path formatting. This can be because your string ID "
-              + "argument to the API method is null, or the ID field in your stripe object "
-              + "instance is null. Please contact support@stripe.com on the latter case. ",
+              + "argument to the API method is null, or the ID field in your Seamless Pay object "
+              + "instance is null.",
           null,
           null,
           null,

@@ -7,10 +7,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.net.ApiRequestParams;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.ChargeCaptureParams;
-import com.stripe.param.ChargeRetrieveParams;
-import com.stripe.param.ChargeUpdateParams;
-import com.stripe.param.SPChargeCreateParams;
+import com.stripe.param.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -246,7 +243,7 @@ public class SPCharge extends ApiResource {
    * Updates the specified charge by setting the values of the parameters passed. Any parameters not
    * provided will be left unchanged.
    */
-  public SPCharge update(ChargeUpdateParams params) throws StripeException {
+  public SPCharge update(SPChargeUpdateParams params) throws StripeException {
     return update(params, (RequestOptions) null);
   }
 
@@ -254,13 +251,13 @@ public class SPCharge extends ApiResource {
    * Updates the specified charge by setting the values of the parameters passed. Any parameters not
    * provided will be left unchanged.
    */
-  public SPCharge update(ChargeUpdateParams params, RequestOptions options) throws StripeException {
+  public SPCharge update(SPChargeUpdateParams params, RequestOptions options) throws StripeException {
     String url =
         String.format(
             "%s%s",
             SPAPI.getApiBase(),
-            String.format("/v1/charges/%s", ApiResource.urlEncodeId(this.getId())));
-    return ApiResource.request(RequestMethod.POST, url, params, SPCharge.class, options);
+            String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(this.getId())));
+    return ApiResource.request(RequestMethod.PUT, url, params, SPCharge.class, options);
   }
 
   /**

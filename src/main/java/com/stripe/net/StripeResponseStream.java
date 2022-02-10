@@ -1,9 +1,12 @@
 package com.stripe.net;
 
 import com.stripe.util.StreamUtils;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 public class StripeResponseStream extends AbstractStripeResponse<InputStream> {
   /**
    * Initializes a new instance of the {@link StripeResponseStream} class.
@@ -24,6 +27,7 @@ public class StripeResponseStream extends AbstractStripeResponse<InputStream> {
    */
   StripeResponse unstream() throws IOException {
     final String bodyString = StreamUtils.readToEnd(this.body, ApiResource.CHARSET);
+    log.debug("response body={}", bodyString);
     this.body.close();
     return new StripeResponse(this.code, this.headers, bodyString);
   }
