@@ -4,9 +4,7 @@ import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.SPCharge;
-import com.stripe.model.SPChargeCollection;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +14,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
 @Slf4j
-class ChargeListTest {
+@RunWith(MockitoJUnitRunner.class)
+class ChargeRetrieveTest {
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "TKN_01EXMB975XXG1XA3MATBNBR4QF";
+  public static final String EXISTING_TRANSACTION_ID = "TR_01E5DR09Z6FCS1TBYMNVQC4QXC";
 
   @InjectMocks
   private SPAPI api;
@@ -34,14 +32,12 @@ class ChargeListTest {
   @Test
   void testReturns401OnInvalidApiKey() {
     //given
-    SPChargeCreateParams params = SPChargeCreateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY + "123")
-      .setSeamlessPayAccount("SPAccount")
       .build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.list(requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.retrieve("", requestOptions));
 
     //then
     assertTrue(ex.getMessage().startsWith("Not authenticated error"));
@@ -49,18 +45,33 @@ class ChargeListTest {
   }
 
   @Test
-  void testListChargesSuccessfully() throws StripeException {
+  void testReturns404IfInvalidTransactionId() {
     //given
-
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY)
       .build();
 
     //when
-    SPChargeCollection chargeCollection = SPCharge.list(requestOptions);
-    log.info("charge collection = {}", chargeCollection);
+    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.retrieve("not_existing_transaction_id", requestOptions));
+    log.info("error", ex);
 
     //then
-    assertNotNull(chargeCollection.getTotal());
+    assertTrue(ex.getMessage().startsWith("Not found error"));
+    assertEquals(404, ex.getStatusCode());
+  }
+
+  @Test
+  void testRetrieveChargeSuccessfully() throws StripeException {
+    //given
+    RequestOptions requestOptions = RequestOptions.builder()
+      .setApiKey(DEV_API_KEY)
+      .build();
+
+    //when
+    SPCharge charge = SPCharge.retrieve(EXISTING_TRANSACTION_ID, requestOptions);
+    log.info("got charge={}", charge);
+
+    //then
+    assertNotNull(charge);
   }
 }

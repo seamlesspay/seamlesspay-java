@@ -55,7 +55,7 @@ class ChargeCreateTest {
     //given
     SPChargeCreateParams params = SPChargeCreateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey("sk_01EWB3GM26X5FE81HQDJ01YK0Y11")
+      .setApiKey(DEV_API_KEY + "123")
       .build();
 
     //when
