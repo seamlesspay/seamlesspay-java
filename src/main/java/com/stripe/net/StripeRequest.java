@@ -73,7 +73,7 @@ public class StripeRequest {
       this.params = (params != null) ? Collections.unmodifiableMap(params) : null;
       this.options = (options != null) ? options : RequestOptions.getDefault();
       this.method = method;
-      this.url = buildURL(method, url, params);
+      this.url = buildURL(method, url, null);   // TODO create separate URL-params
       this.content = buildContent(method, params);
       this.headers = buildHeaders(method, this.options);
     } catch (IOException e) {

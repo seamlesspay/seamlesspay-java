@@ -116,6 +116,7 @@ public class HttpURLConnectionClient extends HttpClient {
       throws IOException, ApiConnectionException {
     HttpURLConnection conn = null;
 
+    log.debug("request url={}", request.url());
     if (request.options().getConnectionProxy() != null) {
       conn =
           (HttpURLConnection) request.url().openConnection(request.options().getConnectionProxy());
