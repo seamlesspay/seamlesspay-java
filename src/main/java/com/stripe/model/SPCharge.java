@@ -273,96 +273,24 @@ public class SPCharge extends ApiResource {
 
   /**
    * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
+   * payment flow, where first you created a charge with the capture option set to false.
    */
   public SPCharge capture() throws StripeException {
-    return capture((Map<String, Object>) null, (RequestOptions) null);
+    return capture(null);
   }
 
   /**
    * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
+   * payment flow, where first you created a charge with the capture option set to false.
    */
   public SPCharge capture(RequestOptions options) throws StripeException {
-    return capture((Map<String, Object>) null, options);
-  }
-
-  /**
-   * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
-   */
-  public SPCharge capture(Map<String, Object> params) throws StripeException {
-    return capture(params, (RequestOptions) null);
-  }
-
-  /**
-   * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
-   */
-  public SPCharge capture(Map<String, Object> params, RequestOptions options) throws StripeException {
-    String url =
-        String.format(
-            "%s%s",
-            SPAPI.getApiBase(),
-            String.format("/v1/charges/%s/capture", ApiResource.urlEncodeId(this.getId())));
-    return ApiResource.request(RequestMethod.POST, url, params, SPCharge.class, options);
-  }
-
-  /**
-   * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
-   */
-  public SPCharge capture(ChargeCaptureParams params) throws StripeException {
-    return capture(params, (RequestOptions) null);
-  }
-
-  /**
-   * Capture the payment of an existing, uncaptured, charge. This is the second half of the two-step
-   * payment flow, where first you <a href="https://stripe.com/docs/api#create_charge">created a
-   * charge</a> with the capture option set to false.
-   *
-   * <p>Uncaptured payments expire a set number of days after they are created (<a
-   * href="https://stripe.com/docs/charges/placing-a-hold">7 by default</a>). If they are not
-   * captured by that point in time, they will be marked as refunded and will no longer be
-   * capturable.
-   */
-  public SPCharge capture(ChargeCaptureParams params, RequestOptions options) throws StripeException {
-    String url =
-        String.format(
-            "%s%s",
-            SPAPI.getApiBase(),
-            String.format("/v1/charges/%s/capture", ApiResource.urlEncodeId(this.getId())));
-    return ApiResource.request(RequestMethod.POST, url, params, SPCharge.class, options);
+    String url = String.format(
+      "%s%s/%s",
+      SPAPI.getApiBase(),
+      CHARGES_URL_PATH,
+      ApiResource.urlEncodeId(this.getId()));
+    SPChargeUpdateParams params = SPChargeUpdateParams.builder().capture(true).build();
+    return ApiResource.request(RequestMethod.PUT, url, params, SPCharge.class, options);
   }
 
 }

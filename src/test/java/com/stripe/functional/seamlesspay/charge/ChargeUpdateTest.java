@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,12 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChargeUpdateTest {
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "TKN_01EXMB975XXG1XA3MATBNBR4QF";
-
-  @InjectMocks
-  private SPAPI api;
-
-  private SPCharge existingCharge;
 
   @BeforeEach
   void setUp() {
