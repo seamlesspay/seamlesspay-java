@@ -108,7 +108,7 @@ class ChargeUpdateTest {
 
     //when
     SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount("123.00").build();
-    ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params, requestOptions)); // TOD replace with uadpte
+    ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params, requestOptions));
 
     //then
     assertEquals(422, ex.getStatusCode());

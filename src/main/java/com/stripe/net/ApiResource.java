@@ -148,13 +148,12 @@ public abstract class ApiResource extends StripeObject {
     return urlEncode(id);
   }
 
-  public static <T extends StripeObjectInterface> T request(
-      ApiResource.RequestMethod method,
-      String url,
-      ApiRequestParams params,
-      Class<T> clazz,
-      RequestOptions options)
-      throws StripeException {
+  public static <T extends StripeObjectInterface> T request(ApiResource.RequestMethod method,
+                                                            String url,
+                                                            ApiRequestParams params,
+                                                            Class<T> clazz,
+                                                            RequestOptions options)
+    throws StripeException {
     checkNullTypedParams(url, params);
     return request(method, url, params.toMap(), clazz, options);
   }

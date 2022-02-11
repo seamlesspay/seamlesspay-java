@@ -252,12 +252,23 @@ public class SPCharge extends ApiResource {
    * provided will be left unchanged.
    */
   public SPCharge update(SPChargeUpdateParams params, RequestOptions options) throws StripeException {
-    String url =
-        String.format(
-            "%s%s",
-            SPAPI.getApiBase(),
-            String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(this.getId())));
+    String url = String.format(
+      "%s%s",
+      SPAPI.getApiBase(),
+      String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(this.getId())));
     return ApiResource.request(RequestMethod.PUT, url, params, SPCharge.class, options);
+  }
+
+  public SPCharge voidCharge(SPChargeVoidParams params) throws StripeException {
+    return voidCharge(params, null);
+  }
+
+  public SPCharge voidCharge(SPChargeVoidParams params, RequestOptions options) throws StripeException {
+    String url = String.format(
+      "%s%s",
+      SPAPI.getApiBase(),
+      String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(this.getId())));
+    return ApiResource.request(RequestMethod.DELETE, url, params, SPCharge.class, options);
   }
 
   /**
