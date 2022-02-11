@@ -133,7 +133,7 @@ public class StripeRequest {
 
   private static HttpContent buildContent(
       ApiResource.RequestMethod method, Map<String, Object> params) throws IOException {
-    if (method != POST && method != PUT) {
+    if (params == null) {
       return null;
     }
 
