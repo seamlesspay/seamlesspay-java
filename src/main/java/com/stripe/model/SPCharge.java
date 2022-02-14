@@ -1,4 +1,3 @@
-// File generated from our OpenAPI spec
 package com.stripe.model;
 
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +6,9 @@ import com.stripe.exception.StripeException;
 import com.stripe.net.ApiRequestParams;
 import com.stripe.net.ApiResource;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.*;
+import com.stripe.param.SPChargeCreateParams;
+import com.stripe.param.SPChargeUpdateParams;
+import com.stripe.param.SPChargeVoidParams;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -186,11 +187,8 @@ public class SPCharge extends ApiResource {
    * charged, although everything else will occur as if in live mode. (Stripe assumes that the
    * charge would have completed successfully).
    */
-  public static SPCharge create(SPChargeCreateParams params, RequestOptions options)
-      throws StripeException {
-    // TODO replace with create(params.toMap()) to avoid code-duplication
-    String url = String.format("%s%s", SPAPI.getApiBase(), CHARGES_URL_PATH);
-    return ApiResource.request(RequestMethod.POST, url, params, SPCharge.class, options);
+  public static SPCharge create(SPChargeCreateParams params, RequestOptions options) throws StripeException {
+    return create(params.toMap(), options);
   }
 
   /**
@@ -199,7 +197,7 @@ public class SPCharge extends ApiResource {
    * information. The same information is returned when creating or refunding the charge.
    */
   public static SPCharge retrieve(String transactionId) throws StripeException {
-    return retrieve(transactionId, (Map<String, Object>) null, (RequestOptions) null);
+    return retrieve(transactionId, null);
   }
 
   /**
@@ -208,35 +206,11 @@ public class SPCharge extends ApiResource {
    * information. The same information is returned when creating or refunding the charge.
    */
   public static SPCharge retrieve(String transactionId, RequestOptions options) throws StripeException {
-    return retrieve(transactionId, (Map<String, Object>) null, options);
-  }
-
-  /**
-   * Retrieves the details of a charge that has previously been created. Supply the unique transaction ID
-   * that was returned from your previous request, and SeamlessPay will return the corresponding charge
-   * information. The same information is returned when creating or refunding the charge.
-   */
-  public static SPCharge retrieve(String transactionId, Map<String, Object> params, RequestOptions options)
-      throws StripeException {
-    String url =
-        String.format(
-            "%s%s",
-            SPAPI.getApiBase(), String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(transactionId)));
-    return ApiResource.request(RequestMethod.GET, url, params, SPCharge.class, options);
-  }
-
-  /**
-   * Retrieves the details of a charge that has previously been created. Supply the unique charge ID
-   * that was returned from your previous request, and Stripe will return the corresponding charge
-   * information. The same information is returned when creating or refunding the charge.
-   */
-  public static SPCharge retrieve(String charge, ChargeRetrieveParams params, RequestOptions options)
-      throws StripeException {
-    String url =
-        String.format(
-            "%s%s",
-            SPAPI.getApiBase(), String.format("/v1/charges/%s", ApiResource.urlEncodeId(charge)));
-    return ApiResource.request(RequestMethod.GET, url, params, SPCharge.class, options);
+    String url = String.format(
+      "%s%s",
+      SPAPI.getApiBase(),
+      String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(transactionId)));
+    return ApiResource.request(RequestMethod.GET, url, (Map<String, Object>) null, SPCharge.class, options);
   }
 
   /**
@@ -289,7 +263,10 @@ public class SPCharge extends ApiResource {
       SPAPI.getApiBase(),
       CHARGES_URL_PATH,
       ApiResource.urlEncodeId(this.getId()));
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().capture(true).build();
+    SPChargeUpdateParams params = SPChargeUpdateParams.builder()
+      .capture(true)
+      .amount(getAmount())
+      .build();
     return ApiResource.request(RequestMethod.PUT, url, params, SPCharge.class, options);
   }
 

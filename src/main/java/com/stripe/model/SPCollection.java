@@ -3,11 +3,13 @@ package com.stripe.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(callSuper = false)
 public abstract class SPCollection<T> extends StripeObject implements SPCollectionInterface<T> {
 

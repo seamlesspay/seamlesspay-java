@@ -3,6 +3,7 @@ package com.stripe.param;
 
 import com.google.gson.annotations.SerializedName;
 import com.stripe.model.SPOrder;
+import com.stripe.model.SPTransactionMethod;
 import com.stripe.net.ApiRequestParams;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,12 @@ public class SPChargeUpdateParams extends ApiRequestParams {
    */
   @SerializedName("amount")
   String amount;
+
+  /**
+   * Transaction method
+   */
+  @SerializedName("method")
+  private SPTransactionMethod method;
 
   /**
    * String with 2 decimal places e.g “25.00”.

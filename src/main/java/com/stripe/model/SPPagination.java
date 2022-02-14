@@ -1,5 +1,8 @@
 package com.stripe.model;
 
+import lombok.ToString;
+
+@ToString
 public class SPPagination {
 
   /**
