@@ -100,7 +100,7 @@ class ChargeUpdateTest {
     log.info("got existing charge={}", existingCharge);
 
     //when
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount("123.00").build();
+    SPChargeUpdateParams params = SPChargeUpdateParams.builder().build();
     ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params, requestOptions));
 
     //then
@@ -109,10 +109,10 @@ class ChargeUpdateTest {
   }
 
   @Test
-  void testUpdatesChargeIfSuccess() throws StripeException {
+  void testUpdatesChargeSuccess() throws StripeException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPCharge existingCharge = SPCharge.retrieve("TR_01FVJXHT64V8X632R0HCMJXMEM", requestOptions);
+    SPCharge existingCharge = SPCharge.retrieve("TR_01FVMZ5D1JN1HQ9JKV133B4RYQ", requestOptions);
 
     double currentAmount = Double.parseDouble(existingCharge.getAmount());
     double newAmount = currentAmount + 1;

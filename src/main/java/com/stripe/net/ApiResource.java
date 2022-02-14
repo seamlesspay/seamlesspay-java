@@ -1,9 +1,6 @@
 package com.stripe.net;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
+import com.google.gson.*;
 import com.stripe.Stripe;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
@@ -12,9 +9,12 @@ import com.stripe.util.StringUtils;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,7 +37,8 @@ public abstract class ApiResource extends StripeObject {
             .registerTypeAdapter(EventData.class, new EventDataDeserializer())
             .registerTypeAdapter(EventRequest.class, new EventRequestDeserializer())
             .registerTypeAdapter(ExpandableField.class, new ExpandableFieldDeserializer())
-            .registerTypeAdapter(StripeRawJsonObject.class, new StripeRawJsonObjectDeserializer());
+            .registerTypeAdapter(StripeRawJsonObject.class, new StripeRawJsonObjectDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
 
     for (TypeAdapterFactory factory : ApiResourceTypeAdapterFactoryProvider.getAll()) {
       builder.registerTypeAdapterFactory(factory);
@@ -298,5 +299,12 @@ public abstract class ApiResource extends StripeObject {
     }
 
     return new ExpandableField<>(newId, currentObject.getExpanded());
+  }
+
+  private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+    @Override
+    public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+      return ZonedDateTime.parse(json.getAsJsonPrimitive().getAsString()).toLocalDateTime();
+    }
   }
 }

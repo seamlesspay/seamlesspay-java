@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 public enum SPTransactionMethod {
 
   @SerializedName("charge")
-  CHARGE
+  CHARGE,
+
+  @SerializedName("refund")
+  REFUND
 
 }
