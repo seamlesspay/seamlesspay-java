@@ -142,6 +142,9 @@ public class SPCharge extends ApiResource {
   @SerializedName("verification")
   private SPCreditCardVerification verification;
 
+  @SerializedName("batch")
+  private String batch;
+
 
   public static SPChargeCollection list(RequestOptions options)
       throws StripeException {
