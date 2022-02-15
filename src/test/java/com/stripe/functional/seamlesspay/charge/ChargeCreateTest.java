@@ -116,7 +116,7 @@ class ChargeCreateTest {
 
     SPChargeCreateParams params = SPChargeCreateParams.builder()
       .amount("1.00")
-      .capture(false)
+      .capture(true)
       .currency(USD)
       .cvv("123")
       .order(spOrder)
