@@ -25,10 +25,11 @@ implementation "com.stripe:stripe-java:20.98.0"
 Add this dependency to your project's POM:
 
 ```xml
+
 <dependency>
-  <groupId>com.stripe</groupId>
-  <artifactId>stripe-java</artifactId>
-  <version>20.98.0</version>
+    <groupId>com.seamlesspay</groupId>
+    <artifactId>stripe-java</artifactId>
+    <version>20.98.0</version>
 </dependency>
 ```
 
@@ -66,10 +67,10 @@ StripeExample.java
 import java.util.HashMap;
 import java.util.Map;
 
-import com.stripe.Stripe;
-import com.stripe.exception.SPException;
-import com.stripe.model.Customer;
-import com.stripe.net.RequestOptions;
+import com.seamlesspay.Stripe;
+import com.seamlesspay.exception.SPException;
+import com.seamlesspay.model.Customer;
+import com.seamlesspay.net.RequestOptions;
 
 public class StripeExample {
 

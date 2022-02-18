@@ -41,12 +41,6 @@ tasks.withType(JavaCompile) {
 //      // to fix by adding the missing summaries.
 //      check("MissingSummary", net.ltgt.gradle.errorprone.CheckSeverity.OFF)
 //
-//      // This check is disabled because multiple nested classes may have the same name in a given
-//      // file. E.g. in `main/java/com/stripe/param/AccountUpdateParams.java`:
-//      // The name `Address` refers to [com.stripe.param.AccountUpdateParams.Company.Address,
-//      // com.stripe.param.AccountUpdateParams.Individual.Address] within this file.)
-//      // We should fix this by having autogen use the fully-qualified class to eliminate ambiguity.
-//      check("SameNameButDifferent", net.ltgt.gradle.errorprone.CheckSeverity.OFF)
 //    }
 }
 
@@ -81,7 +75,7 @@ jar {
                    "Implementation-Version": VERSION_NAME,
                    "Implementation-Vendor": VENDOR_NAME,
                    "Bundle-SymbolicName": POM_ARTIFACT_ID,
-                   "Export-Package": "com.stripe.*")
+                   "Export-Package": "com.seamlesspay.*")
 
         archiveVersion = VERSION_NAME
     }
@@ -137,7 +131,7 @@ coveralls {
 //}
 
 gitPublish {
-    repoUri = 'git@github.com:stripe/stripe-java.git'
+    repoUri = 'git@github.com:seamlesspay/seamlesspay-java.git'
     branch = 'gh-pages'
     sign = false // disable commit signing
 
