@@ -75,10 +75,8 @@ class RefundTest {
       .token(VALID_TOKEN)
       .build();
     Charge charge = Charge.create(params, defaultRequestOptions);
-    Charge charge2 = Charge.create(params, defaultRequestOptions);
     BatchCloseResult closeBatchResult = Batch.close(charge.getBatch(), defaultRequestOptions);
     assertNotNull(closeBatchResult);
-    Batch.retrieveTransactions(charge.getBatch(), defaultRequestOptions);
 
     //when
     RefundCreateParams refundParams = RefundCreateParams.builder().transactionID(charge.getId()).build();

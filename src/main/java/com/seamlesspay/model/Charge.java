@@ -146,8 +146,11 @@ public class Charge extends ApiResource {
   private String batch;
 
 
-  public static ChargeCollection list(RequestOptions options)
-      throws SPException {
+  public static ChargeCollection list() throws SPException {
+    return list(null);
+  }
+
+  public static ChargeCollection list(RequestOptions options) throws SPException {
     String url = String.format("%s%s", SPAPI.getApiBase(), CHARGES_URL_PATH);
     return ApiResource.requestSPCollection(url, (ApiRequestParams) null, ChargeCollection.class, options);
   }

@@ -33,6 +33,7 @@ class ChargeCreateTest {
   @BeforeEach
   void setUp() {
     SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.apiKey = DEV_API_KEY;
   }
 
   @Test
@@ -73,12 +74,8 @@ class ChargeCreateTest {
       .amount("1.00")
       .build();
 
-    RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY)
-      .build();
-
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> Charge.create(params, requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Charge.create(params));
 
     //then
     assertTrue(ex.getMessage().startsWith("Unprocessable error"));
@@ -123,12 +120,8 @@ class ChargeCreateTest {
       .token(VALID_TOKEN)
       .build();
 
-    RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY)
-      .build();
-
     //when
-    Charge charge = Charge.create(params, requestOptions);
+    Charge charge = Charge.create(params);
 
     //then
     assertEquals("1.00", charge.getAmount());
