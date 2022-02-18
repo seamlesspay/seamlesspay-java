@@ -10,7 +10,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.stripe.Stripe;
+import com.seamlesspay.SPAPI;
 import com.stripe.param.common.EmptyParam;
 import java.io.IOException;
 import java.util.Map;
@@ -47,7 +47,7 @@ class ApiRequestParamsConverter {
                   "Unexpected schema for extra params. JSON object is expected at key `%s`, but found"
                       + " `%s`. This is likely a problem with this current library version `%s`. "
                       + "Please contact support@stripe.com for assistance.",
-                  ApiRequestParams.EXTRA_PARAMS_KEY, jsonValue, Stripe.VERSION));
+                  ApiRequestParams.EXTRA_PARAMS_KEY, jsonValue, SPAPI.VERSION));
         }
         // JSON value now corresponds to the extra params map, and is also deserialized as a map.
         // Instead of putting this result map under the original key, flatten the map

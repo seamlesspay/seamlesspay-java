@@ -1,8 +1,8 @@
 package com.stripe.net;
 
-import com.stripe.Stripe;
+import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiConnectionException;
-import com.stripe.exception.StripeException;
+import com.stripe.exception.SPException;
 import com.stripe.util.Stopwatch;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -33,28 +33,28 @@ public abstract class HttpClient {
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public abstract StripeResponse request(StripeRequest request) throws StripeException;
+  public abstract SPResponse request(SPRequest request) throws SPException;
 
   /**
    * Sends the given request to Stripe's API, streaming the response body.
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public StripeResponseStream requestStream(StripeRequest request) throws StripeException {
+  public SPResponseStream requestStream(SPRequest request) throws SPException {
     throw new UnsupportedOperationException("requestStream is unimplemented for this HttpClient");
   }
 
   @FunctionalInterface
   private interface RequestSendFunction<R> {
-    R apply(StripeRequest request) throws StripeException;
+    R apply(SPRequest request) throws SPException;
   }
 
-  private <T extends AbstractStripeResponse<?>> T sendWithTelemetry(
-      StripeRequest request, RequestSendFunction<T> send) throws StripeException {
+  private <T extends AbstractSPResponse<?>> T sendWithTelemetry(
+    SPRequest request, RequestSendFunction<T> send) throws SPException {
     Optional<String> telemetryHeaderValue = requestTelemetry.getHeaderValue(request.headers());
     if (telemetryHeaderValue.isPresent()) {
       request =
@@ -77,9 +77,9 @@ public abstract class HttpClient {
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public StripeResponse requestWithTelemetry(StripeRequest request) throws StripeException {
+  public SPResponse requestWithTelemetry(SPRequest request) throws SPException {
     return sendWithTelemetry(request, this::request);
   }
 
@@ -89,15 +89,15 @@ public abstract class HttpClient {
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public StripeResponseStream requestStreamWithTelemetry(StripeRequest request)
-      throws StripeException {
+  public SPResponseStream requestStreamWithTelemetry(SPRequest request)
+      throws SPException {
     return sendWithTelemetry(request, this::requestStream);
   }
 
-  public <T extends AbstractStripeResponse<?>> T sendWithRetries(
-      StripeRequest request, RequestSendFunction<T> send) throws StripeException {
+  public <T extends AbstractSPResponse<?>> T sendWithRetries(
+    SPRequest request, RequestSendFunction<T> send) throws SPException {
     ApiConnectionException requestException = null;
     T response = null;
     int retry = 0;
@@ -139,9 +139,9 @@ public abstract class HttpClient {
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public StripeResponse requestWithRetries(StripeRequest request) throws StripeException {
+  public SPResponse requestWithRetries(SPRequest request) throws SPException {
     return sendWithRetries(request, (r) -> this.requestWithTelemetry(r));
   }
 
@@ -151,10 +151,10 @@ public abstract class HttpClient {
    *
    * @param request the request
    * @return the response
-   * @throws StripeException If the request fails for any reason
+   * @throws SPException If the request fails for any reason
    */
-  public StripeResponseStream requestStreamWithRetries(StripeRequest request)
-      throws StripeException {
+  public SPResponseStream requestStreamWithRetries(SPRequest request)
+      throws SPException {
     return sendWithRetries(request, (r) -> this.requestStreamWithTelemetry(r));
   }
 
@@ -164,10 +164,10 @@ public abstract class HttpClient {
    * @return a string containing the value of the {@code User-Agent} header
    */
   protected static String buildUserAgentString() {
-    String userAgent = String.format("Stripe/v1 JavaBindings/%s", Stripe.VERSION);
+    String userAgent = String.format("Stripe/v1 JavaBindings/%s", SPAPI.VERSION);
 
-    if (Stripe.getAppInfo() != null) {
-      userAgent += " " + formatAppInfo(Stripe.getAppInfo());
+    if (SPAPI.getAppInfo() != null) {
+      userAgent += " " + formatAppInfo(SPAPI.getAppInfo());
     }
 
     return userAgent;
@@ -193,11 +193,11 @@ public abstract class HttpClient {
     for (String propertyName : propertyNames) {
       propertyMap.put(propertyName, System.getProperty(propertyName));
     }
-    propertyMap.put("bindings.version", Stripe.VERSION);
+    propertyMap.put("bindings.version", SPAPI.VERSION);
     propertyMap.put("lang", "Java");
     propertyMap.put("publisher", "Stripe");
-    if (Stripe.getAppInfo() != null) {
-      propertyMap.put("application", ApiResource.GSON.toJson(Stripe.getAppInfo()));
+    if (SPAPI.getAppInfo() != null) {
+      propertyMap.put("application", ApiResource.GSON.toJson(SPAPI.getAppInfo()));
     }
 
     return ApiResource.GSON.toJson(propertyMap);
@@ -217,8 +217,8 @@ public abstract class HttpClient {
     return str;
   }
 
-  private <T extends AbstractStripeResponse<?>> boolean shouldRetry(
-      int numRetries, StripeException exception, StripeRequest request, T response) {
+  private <T extends AbstractSPResponse<?>> boolean shouldRetry(
+    int numRetries, SPException exception, SPRequest request, T response) {
     // Do not retry if we are out of retries.
     if (numRetries >= request.options().getMaxNetworkRetries()) {
       return false;

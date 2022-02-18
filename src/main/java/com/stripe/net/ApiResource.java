@@ -1,9 +1,9 @@
 package com.stripe.net;
 
 import com.google.gson.*;
-import com.stripe.Stripe;
+import com.seamlesspay.SPAPI;
 import com.stripe.exception.InvalidRequestException;
-import com.stripe.exception.StripeException;
+import com.stripe.exception.SPException;
 import com.stripe.model.*;
 import com.stripe.util.StringUtils;
 
@@ -16,33 +16,25 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import java.util.Objects;
 
-public abstract class ApiResource extends StripeObject {
+public abstract class ApiResource extends SPObject {
   public static final Charset CHARSET = StandardCharsets.UTF_8;
 
-  private static StripeResponseGetter stripeResponseGetter = new LiveStripeResponseGetter();
+  private static ResponseGetter responseGetter = new LiveResponseGetter();
 
   public static final Gson GSON = createGson();
 
-  public static void setStripeResponseGetter(StripeResponseGetter srg) {
-    ApiResource.stripeResponseGetter = srg;
+  public static void setResponseGetter(ResponseGetter srg) {
+    ApiResource.responseGetter = srg;
   }
 
   private static Gson createGson() {
     GsonBuilder builder =
         new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .registerTypeAdapter(EphemeralKey.class, new EphemeralKeyDeserializer())
-            .registerTypeAdapter(EventData.class, new EventDataDeserializer())
-            .registerTypeAdapter(EventRequest.class, new EventRequestDeserializer())
-            .registerTypeAdapter(ExpandableField.class, new ExpandableFieldDeserializer())
-            .registerTypeAdapter(StripeRawJsonObject.class, new StripeRawJsonObjectDeserializer())
+            .registerTypeAdapter(RawJsonObject.class, new RawJsonObjectDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
 
-    for (TypeAdapterFactory factory : ApiResourceTypeAdapterFactoryProvider.getAll()) {
-      builder.registerTypeAdapterFactory(factory);
-    }
     return builder.create();
   }
 
@@ -71,7 +63,7 @@ public abstract class ApiResource extends StripeObject {
   }
 
   protected static String singleClassUrl(Class<?> clazz) {
-    return singleClassUrl(clazz, Stripe.getApiBase());
+    return singleClassUrl(clazz, SPAPI.getApiBase());
   }
 
   protected static String singleClassUrl(Class<?> clazz, String apiBase) {
@@ -79,7 +71,7 @@ public abstract class ApiResource extends StripeObject {
   }
 
   protected static String classUrl(Class<?> clazz) {
-    return classUrl(clazz, Stripe.getApiBase());
+    return classUrl(clazz, SPAPI.getApiBase());
   }
 
   protected static String classUrl(Class<?> clazz, String apiBase) {
@@ -87,22 +79,11 @@ public abstract class ApiResource extends StripeObject {
   }
 
   protected static String instanceUrl(Class<?> clazz, String id) throws InvalidRequestException {
-    return instanceUrl(clazz, id, Stripe.getApiBase());
+    return instanceUrl(clazz, id, SPAPI.getApiBase());
   }
 
-  protected static String instanceUrl(Class<?> clazz, String id, String apiBase)
-      throws InvalidRequestException {
+  protected static String instanceUrl(Class<?> clazz, String id, String apiBase) {
     return String.format("%s/%s", classUrl(clazz, apiBase), urlEncode(id));
-  }
-
-  protected static String subresourceUrl(Class<?> clazz, String id, Class<?> subClazz)
-      throws InvalidRequestException {
-    return subresourceUrl(clazz, id, subClazz, Stripe.getApiBase());
-  }
-
-  private static String subresourceUrl(Class<?> clazz, String id, Class<?> subClazz, String apiBase)
-      throws InvalidRequestException {
-    return String.format("%s/%s/%ss", classUrl(clazz, apiBase), urlEncode(id), className(subClazz));
   }
 
   public enum RequestMethod {
@@ -141,7 +122,6 @@ public abstract class ApiResource extends StripeObject {
               + "instance is null.",
           null,
           null,
-          null,
           0,
           null);
     }
@@ -149,31 +129,31 @@ public abstract class ApiResource extends StripeObject {
     return urlEncode(id);
   }
 
-  public static <T extends StripeObjectInterface> T request(ApiResource.RequestMethod method,
-                                                            String url,
-                                                            ApiRequestParams params,
-                                                            Class<T> clazz,
-                                                            RequestOptions options)
-    throws StripeException {
+  public static <T extends SPObjectInterface> T request(ApiResource.RequestMethod method,
+                                                        String url,
+                                                        ApiRequestParams params,
+                                                        Class<T> clazz,
+                                                        RequestOptions options)
+    throws SPException {
     checkNullTypedParams(url, params);
     return request(method, url, params.toMap(), clazz, options);
   }
 
-  public static <T extends StripeObjectInterface> T request(ApiResource.RequestMethod method,
-                                                            String url,
-                                                            Map<String, Object> params,
-                                                            Class<T> clazz,
-                                                            RequestOptions options)
-    throws StripeException {
+  public static <T extends SPObjectInterface> T request(ApiResource.RequestMethod method,
+                                                        String url,
+                                                        Map<String, Object> params,
+                                                        Class<T> clazz,
+                                                        RequestOptions options)
+    throws SPException {
 
-    return ApiResource.stripeResponseGetter.request(method, url, params, clazz, options);
+    return ApiResource.responseGetter.request(method, url, params, clazz, options);
   }
 
   public static InputStream requestStream(ApiResource.RequestMethod method,
                                           String url,
                                           ApiRequestParams params,
                                           RequestOptions options)
-      throws StripeException {
+      throws SPException {
 
     checkNullTypedParams(url, params);
     return requestStream(method, url, params.toMap(), options);
@@ -183,25 +163,16 @@ public abstract class ApiResource extends StripeObject {
                                           String url,
                                           Map<String, Object> params,
                                           RequestOptions options)
-    throws StripeException {
+    throws SPException {
 
-    return ApiResource.stripeResponseGetter.requestStream(method, url, params, options);
-  }
-
-  public static <T extends StripeCollectionInterface<?>> T requestCollection(String url,
-                                                                             ApiRequestParams params,
-                                                                             Class<T> clazz,
-                                                                             RequestOptions options)
-      throws StripeException {
-
-    return requestCollection(url, params.toMap(), clazz, options);
+    return ApiResource.responseGetter.requestStream(method, url, params, options);
   }
 
   public static <T extends SPCollectionInterface<?>> T requestSPCollection(String url,
                                                                            ApiRequestParams params,
                                                                            Class<T> clazz,
                                                                            RequestOptions options)
-    throws StripeException {
+    throws SPException {
 
     Map<String, Object> paramsMap = (params == null) ? null : params.toMap();
     return requestSPCollection(url, paramsMap, clazz, options);
@@ -214,17 +185,11 @@ public abstract class ApiResource extends StripeObject {
    * <p>Collections need a little extra work because we need to plumb request options and params
    * through so that we can iterate to the next page if necessary.
    */
-  public static <T extends StripeCollectionInterface<?>> T requestCollection(
+  public static <T extends SPCollectionInterface<?>> T requestCollection(
       String url, Map<String, Object> params, Class<T> clazz, RequestOptions options)
-      throws StripeException {
-    T collection = request(RequestMethod.GET, url, params, clazz, options);
+      throws SPException {
 
-    if (collection != null) {
-      collection.setRequestOptions(options);
-      collection.setRequestParams(params);
-    }
-
-    return collection;
+    return request(RequestMethod.GET, url, params, clazz, options);
   }
 
   /**
@@ -236,38 +201,9 @@ public abstract class ApiResource extends StripeObject {
    */
   public static <T extends SPCollectionInterface<?>> T requestSPCollection(
       String url, Map<String, Object> params, Class<T> clazz, RequestOptions options)
-      throws StripeException {
+      throws SPException {
 
     return request(RequestMethod.GET, url, params, clazz, options);
-  }
-
-  public static <T extends StripeSearchResultInterface<?>> T requestSearchResult(
-      String url, ApiRequestParams params, Class<T> clazz, RequestOptions options)
-      throws StripeException {
-    checkNullTypedParams(url, params);
-    return requestSearchResult(url, params.toMap(), clazz, options);
-  }
-
-  /**
-   * Similar to #request, but specific for use with searchResult types that come from the API
-   *
-   * <p>SearchResults, like collections need a little extra work because we need to plumb request
-   * options and params through so that we can iterate to the next page if necessary.
-   *
-   * <p>Please note, requestSearchResult is beta functionality and is subject to charge or removal
-   * at any time.
-   */
-  public static <T extends StripeSearchResultInterface<?>> T requestSearchResult(
-      String url, Map<String, Object> params, Class<T> clazz, RequestOptions options)
-      throws StripeException {
-    T searchResult = request(RequestMethod.GET, url, params, clazz, options);
-
-    if (searchResult != null) {
-      searchResult.setRequestOptions(options);
-      searchResult.setRequestParams(params);
-    }
-
-    return searchResult;
   }
 
   /**
@@ -284,21 +220,6 @@ public abstract class ApiResource extends StripeObject {
                   + "Please pass empty params using param builder via `builder().build()` instead.",
               url));
     }
-  }
-
-  /**
-   * When setting a String ID for an ExpandableField, we need to be careful about keeping the String
-   * ID and the expanded object in sync. If they specify a new String ID that is different from the
-   * ID within the expanded object, we don't keep the object.
-   */
-  public static <T extends HasId> ExpandableField<T> setExpandableFieldId(
-      String newId, ExpandableField<T> currentObject) {
-    if (currentObject == null
-        || (currentObject.isExpanded() && !Objects.equals(currentObject.getId(), newId))) {
-      return new ExpandableField<>(newId, null);
-    }
-
-    return new ExpandableField<>(newId, currentObject.getExpanded());
   }
 
   private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {

@@ -17,8 +17,8 @@ public abstract class SPAPI {
   public static final String VERSION = "0.0.1";
 
   public static volatile String apiKey;
-//  public static volatile String clientId;
-//  public static volatile boolean enableTelemetry = true;
+  public static volatile String clientId;
+  public static volatile boolean enableTelemetry = true;
 //  public static volatile String partnerId;
 
   // Note that URLConnection reserves the value of 0 to mean "infinite

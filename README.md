@@ -67,7 +67,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.stripe.Stripe;
-import com.stripe.exception.StripeException;
+import com.stripe.exception.SPException;
 import com.stripe.model.Customer;
 import com.stripe.net.RequestOptions;
 

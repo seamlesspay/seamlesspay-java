@@ -2,8 +2,9 @@ package com.stripe.functional.seamlesspay.charge;
 
 import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPCharge;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.SPException;
+import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class ChargeRetrieveTest {
       .build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.retrieve("", requestOptions));
+    AuthenticationException ex = assertThrows(AuthenticationException.class, () -> Charge.retrieve("", requestOptions));
 
     //then
     assertTrue(ex.getMessage().startsWith("Not authenticated error"));
@@ -52,7 +53,7 @@ class ChargeRetrieveTest {
       .build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.retrieve("not_existing_transaction_id", requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Charge.retrieve("not_existing_transaction_id", requestOptions));
     log.info("error", ex);
 
     //then
@@ -61,14 +62,14 @@ class ChargeRetrieveTest {
   }
 
   @Test
-  void testRetrieveChargeSuccessfully() throws StripeException {
+  void testRetrieveChargeSuccessfully() throws SPException {
     //given
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY)
       .build();
 
     //when
-    SPCharge charge = SPCharge.retrieve(EXISTING_TRANSACTION_ID, requestOptions);
+    Charge charge = Charge.retrieve(EXISTING_TRANSACTION_ID, requestOptions);
     log.info("got charge={}", charge);
 
     //then

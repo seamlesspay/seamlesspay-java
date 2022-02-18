@@ -1,4 +1,3 @@
-// File generated from our OpenAPI spec
 package com.stripe.model;
 
-public class ChargeCollection extends StripeCollection<Charge> {}
+public class ChargeCollection extends SPCollection<Charge> {}
