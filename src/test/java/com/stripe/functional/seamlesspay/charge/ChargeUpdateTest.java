@@ -4,10 +4,10 @@ import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;
 import com.stripe.exception.AuthenticationException;
 import com.stripe.exception.InvalidRequestException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPCharge;
+import com.stripe.exception.SPException;
+import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeUpdateParams;
+import com.stripe.param.ChargeUpdateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,15 +30,15 @@ class ChargeUpdateTest {
   @Test
   void testAuthenticationExceptionIfApiKeyNotSpecified() {
     //given
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().build();
+    ChargeUpdateParams params = ChargeUpdateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(null)
       .build();
 
     //when
-    SPCharge spCharge = new SPCharge();
-    spCharge.setId("123");
-    AuthenticationException exception = assertThrows(AuthenticationException.class, () -> spCharge.update(params, requestOptions));
+    Charge charge = new Charge();
+    charge.setId("123");
+    AuthenticationException exception = assertThrows(AuthenticationException.class, () -> charge.update(params, requestOptions));
 
     //then
     assertTrue(exception.getMessage().startsWith("No API key provided"));
@@ -47,13 +47,13 @@ class ChargeUpdateTest {
   @Test
   void testInvalidRequestExceptionIfNoId() {
     //given
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().build();
+    ChargeUpdateParams params = ChargeUpdateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder().build();
 
     //when
-    SPCharge spCharge = new SPCharge();
-    spCharge.setId(null);
-    InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> spCharge.update(params, requestOptions));
+    Charge charge = new Charge();
+    charge.setId(null);
+    InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> charge.update(params, requestOptions));
 
     //then
     assertTrue(exception.getMessage().startsWith("Invalid null ID found"));
@@ -62,15 +62,15 @@ class ChargeUpdateTest {
   @Test
   void testReturns401OnInvalidApiKey() {
     //given
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().build();
+    ChargeUpdateParams params = ChargeUpdateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY + "123")
       .build();
 
     //when
-    SPCharge spCharge = new SPCharge();
-    spCharge.setId("123");
-    ApiException ex = assertThrows(ApiException.class, () -> spCharge.update(params, requestOptions));
+    Charge charge = new Charge();
+    charge.setId("123");
+    AuthenticationException ex = assertThrows(AuthenticationException.class, () -> charge.update(params, requestOptions));
 
     //then
     assertEquals(401, ex.getStatusCode());
@@ -81,26 +81,26 @@ class ChargeUpdateTest {
   void testReturns404OnNotExistingTransactionId() {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount("1.00").build();
+    ChargeUpdateParams params = ChargeUpdateParams.builder().amount("1.00").build();
 
     //when
-    SPCharge spCharge = new SPCharge();
-    spCharge.setId("TR_1234567890KMBYB64KRMFPQN6W");
-    ApiException ex = assertThrows(ApiException.class, () -> spCharge.update(params, requestOptions));
+    Charge charge = new Charge();
+    charge.setId("TR_1234567890KMBYB64KRMFPQN6W");
+    ApiException ex = assertThrows(ApiException.class, () -> charge.update(params, requestOptions));
 
     //then
     assertEquals(404, ex.getStatusCode());
   }
 
   @Test
-  void testReturns422IfMissingRequiredField() throws StripeException {
+  void testReturns422IfMissingRequiredField() throws SPException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPCharge existingCharge = SPCharge.retrieve("TR_01FVFJ0XX7KMBYB64KRMFPQN6W", requestOptions);
+    Charge existingCharge = Charge.retrieve("TR_01FVFJ0XX7KMBYB64KRMFPQN6W", requestOptions);
     log.info("got existing charge={}", existingCharge);
 
     //when
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().build();
+    ChargeUpdateParams params = ChargeUpdateParams.builder().build();
     ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params, requestOptions));
 
     //then
@@ -109,10 +109,10 @@ class ChargeUpdateTest {
   }
 
   @Test
-  void testUpdatesChargeSuccess() throws StripeException {
+  void testUpdatesChargeSuccess() throws SPException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPCharge existingCharge = SPCharge.retrieve("TR_01FVMZ5D1JN1HQ9JKV133B4RYQ", requestOptions);
+    Charge existingCharge = Charge.retrieve("TR_01FVMZ5D1JN1HQ9JKV133B4RYQ", requestOptions);
 
     double currentAmount = Double.parseDouble(existingCharge.getAmount());
     double newAmount = currentAmount + 1;
@@ -120,8 +120,8 @@ class ChargeUpdateTest {
 
     //when
     String newAmountString = String.format(java.util.Locale.US, "%.2f", newAmount);
-    SPChargeUpdateParams params = SPChargeUpdateParams.builder().amount(newAmountString).build();
-    SPCharge updatedCharge = existingCharge.update(params, requestOptions);
+    ChargeUpdateParams params = ChargeUpdateParams.builder().amount(newAmountString).build();
+    Charge updatedCharge = existingCharge.update(params, requestOptions);
 
     //then
     assertEquals(newAmountString, updatedCharge.getAmount());

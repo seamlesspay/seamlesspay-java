@@ -1,6 +1,6 @@
 package com.stripe.exception;
 
-public class ApiConnectionException extends StripeException {
+public class ApiConnectionException extends SPException {
   private static final long serialVersionUID = 2L;
 
   public ApiConnectionException(String message) {

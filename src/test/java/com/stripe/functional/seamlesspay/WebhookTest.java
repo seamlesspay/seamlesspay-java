@@ -1,7 +1,7 @@
 package com.stripe.functional.seamlesspay;
 
-import com.stripe.model.SPEvent;
-import com.stripe.net.SPWebhook;
+import com.stripe.model.Event;
+import com.stripe.net.Webhook;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class WebhookTest {
 
   @InjectMocks
-  private SPWebhook webhook;
+  private Webhook webhook;
 
   @Test
   void testConstructsEvent() {
@@ -24,7 +24,7 @@ public class WebhookTest {
       "\"createdAt\":\"2017-12-15T19:08:18.262Z\"}";
 
     //when
-    SPEvent event = SPWebhook.constructEvent(eventJson);
+    Event event = Webhook.constructEvent(eventJson);
 
     //then
     assertNotNull(event);

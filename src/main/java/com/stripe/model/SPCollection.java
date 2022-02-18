@@ -11,13 +11,13 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public abstract class SPCollection<T> extends StripeObject implements SPCollectionInterface<T> {
+public abstract class SPCollection<T> extends SPObject implements SPCollectionInterface<T> {
 
   @Getter(onMethod_ = {@Override})
   private List<T> data;
 
   @Getter(onMethod_ = {@Override})
-  private SPPagination pagination;
+  private Pagination pagination;
 
   @Getter(onMethod_ = {@Override})
   private Integer total;

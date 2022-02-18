@@ -2,12 +2,13 @@ package com.stripe.functional.seamlesspay.batch;
 
 import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPBatch;
-import com.stripe.model.SPBatchCloseResult;
-import com.stripe.model.SPCharge;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.SPException;
+import com.stripe.model.Batch;
+import com.stripe.model.BatchCloseResult;
+import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeCreateParams;
+import com.stripe.param.ChargeCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.stripe.model.SPCurrency.USD;
+import static com.stripe.model.Currency.USD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -44,7 +45,7 @@ class BatchCloseTest {
 
 
     //when
-    ApiException exception = assertThrows(ApiException.class, () -> SPBatch.close(null, requestOptions));
+    AuthenticationException exception = assertThrows(AuthenticationException.class, () -> Batch.close(null, requestOptions));
 
     //then
     assertEquals(401, exception.getStatusCode());
@@ -56,7 +57,7 @@ class BatchCloseTest {
     //given
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPBatch.close(null, defaultRequestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Batch.close(null, defaultRequestOptions));
 
     //then
     assertEquals(422, ex.getStatusCode());
@@ -64,19 +65,19 @@ class BatchCloseTest {
   }
 
   @Test
-  void testBatchCloseSuccess() throws StripeException {
+  void testBatchCloseSuccess() throws SPException {
     //given
-    SPChargeCreateParams params = SPChargeCreateParams.builder()
+    ChargeCreateParams params = ChargeCreateParams.builder()
       .amount("1.00")
       .capture(true)
       .currency(USD)
 //      .cvv("123")
       .token(VALID_TOKEN)
       .build();
-    SPCharge spCharge = SPCharge.create(params, defaultRequestOptions);
+    Charge charge = Charge.create(params, defaultRequestOptions);
 
     //when
-    SPBatchCloseResult closeResult = SPBatch.close(spCharge.getBatch(), defaultRequestOptions);
+    BatchCloseResult closeResult = Batch.close(charge.getBatch(), defaultRequestOptions);
 //    SPRefundCreateParams refundParams = SPRefundCreateParams.builder().transactionID(charge.getId()).build();
 //    SPBatch batch = SPBatch.close(refundParams, defaultRequestOptions);
     log.info("batch close result={}", closeResult);

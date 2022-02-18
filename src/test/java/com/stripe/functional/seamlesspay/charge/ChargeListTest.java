@@ -1,12 +1,12 @@
 package com.stripe.functional.seamlesspay.charge;
 
 import com.seamlesspay.SPAPI;
-import com.stripe.exception.ApiException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPCharge;
-import com.stripe.model.SPChargeCollection;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.SPException;
+import com.stripe.model.Charge;
+import com.stripe.model.ChargeCollection;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeCreateParams;
+import com.stripe.param.ChargeCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,14 +34,14 @@ class ChargeListTest {
   @Test
   void testReturns401OnInvalidApiKey() {
     //given
-    SPChargeCreateParams params = SPChargeCreateParams.builder().build();
+    ChargeCreateParams params = ChargeCreateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY + "123")
       .setSeamlessPayAccount("SPAccount")
       .build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPCharge.list(requestOptions));
+    AuthenticationException ex = assertThrows(AuthenticationException.class, () -> Charge.list(requestOptions));
 
     //then
     assertTrue(ex.getMessage().startsWith("Not authenticated error"));
@@ -49,7 +49,7 @@ class ChargeListTest {
   }
 
   @Test
-  void testListChargesSuccessfully() throws StripeException {
+  void testListChargesSuccessfully() throws SPException {
     //given
 
     RequestOptions requestOptions = RequestOptions.builder()
@@ -57,7 +57,7 @@ class ChargeListTest {
       .build();
 
     //when
-    SPChargeCollection chargeCollection = SPCharge.list(requestOptions);
+    ChargeCollection chargeCollection = Charge.list(requestOptions);
     log.info("charge collection = {}", chargeCollection);
 
     //then

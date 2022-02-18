@@ -1,12 +1,11 @@
 package com.stripe.net;
 
 import com.seamlesspay.SPAPI;
-import com.stripe.Stripe;
+import lombok.EqualsAndHashCode;
+
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.Base64;
-import java.util.Map;
-import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = false)
 public class RequestOptions {
@@ -33,16 +32,16 @@ public class RequestOptions {
 
   public static RequestOptions getDefault() {
     return new RequestOptions(
-        Stripe.apiKey,
-        Stripe.clientId,
-        null,
-        null,
-        null,
-        Stripe.getConnectTimeout(),
-        Stripe.getReadTimeout(),
-        Stripe.getMaxNetworkRetries(),
-        Stripe.getConnectionProxy(),
-        Stripe.getProxyCredential());
+      SPAPI.apiKey,
+      SPAPI.clientId,
+      null,
+      null,
+      null,
+      SPAPI.getConnectTimeout(),
+      SPAPI.getReadTimeout(),
+      SPAPI.getMaxNetworkRetries(),
+      SPAPI.getConnectionProxy(),
+      SPAPI.getProxyCredential());
   }
 
   private RequestOptions(
@@ -142,13 +141,13 @@ public class RequestOptions {
      * default values.
      */
     public RequestOptionsBuilder() {
-      this.apiKey = Stripe.apiKey;
-      this.clientId = Stripe.clientId;
-      this.connectTimeout = Stripe.getConnectTimeout();
-      this.readTimeout = Stripe.getReadTimeout();
-      this.maxNetworkRetries = Stripe.getMaxNetworkRetries();
-      this.connectionProxy = Stripe.getConnectionProxy();
-      this.proxyCredential = Stripe.getProxyCredential();
+      this.apiKey = SPAPI.apiKey;
+      this.clientId = SPAPI.clientId;
+      this.connectTimeout = SPAPI.getConnectTimeout();
+      this.readTimeout = SPAPI.getReadTimeout();
+      this.maxNetworkRetries = SPAPI.getMaxNetworkRetries();
+      this.connectionProxy = SPAPI.getConnectionProxy();
+      this.proxyCredential = SPAPI.getProxyCredential();
     }
 
     public String getApiKey() {
@@ -278,8 +277,7 @@ public class RequestOptions {
     /**
      * Do not use this except for in API where JSON response is not fully deserialized into explicit
      * Stripe classes, but only passed to other clients as raw data -- essentially making request on
-     * behalf of others with their API version. One example is in {@link
-     * com.stripe.model.EphemeralKey#create(Map, RequestOptions)}. Setting this value in a typical
+     * behalf of others with their API version. Setting this value in a typical
      * scenario will result in deserialization error as the model classes have schema according to
      * the pinned {@link Stripe#API_VERSION} and not the {@code stripeVersionOverride}
      *

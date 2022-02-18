@@ -1,9 +1,9 @@
 package com.stripe.exception;
 
-public class IdempotencyException extends StripeException {
+public class IdempotencyException extends SPException {
   private static final long serialVersionUID = 2L;
 
-  public IdempotencyException(String message, String requestId, String code, Integer statusCode) {
+  public IdempotencyException(String message, String requestId, Integer code, Integer statusCode) {
     super(message, requestId, code, statusCode);
   }
 }

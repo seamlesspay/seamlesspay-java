@@ -2,13 +2,13 @@ package com.stripe.net;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.stripe.Stripe;
+import com.seamlesspay.SPAPI;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.Data;
 
-/** Helper class used by {@link LiveStripeResponseGetter} to manage request telemetry. */
+/** Helper class used by {@link LiveResponseGetter} to manage request telemetry. */
 class RequestTelemetry {
   /** The name of the header used to send request telemetry in requests. */
   public static final String HEADER_NAME = "X-Stripe-Client-Telemetry";
@@ -37,7 +37,7 @@ class RequestTelemetry {
       return Optional.empty();
     }
 
-    if (!Stripe.enableTelemetry) {
+    if (!SPAPI.enableTelemetry) {
       return Optional.empty();
     }
 
@@ -52,8 +52,8 @@ class RequestTelemetry {
    * @param response the Stripe response
    * @param duration the request duration
    */
-  public void maybeEnqueueMetrics(AbstractStripeResponse<?> response, Duration duration) {
-    if (!Stripe.enableTelemetry) {
+  public void maybeEnqueueMetrics(AbstractSPResponse<?> response, Duration duration) {
+    if (!SPAPI.enableTelemetry) {
       return;
     }
 

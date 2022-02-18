@@ -1,6 +1,6 @@
 package com.stripe.net;
 
-import com.stripe.Stripe;
+import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiConnectionException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class HttpURLConnectionClient extends HttpClient {
    * @throws ApiConnectionException if an error occurs when sending or receiving
    */
   @Override
-  public StripeResponseStream requestStream(StripeRequest request) throws ApiConnectionException {
+  public SPResponseStream requestStream(SPRequest request) throws ApiConnectionException {
     try {
       final HttpURLConnection conn = createStripeConnection(request);
 
@@ -64,7 +64,7 @@ public class HttpURLConnectionClient extends HttpClient {
               ? conn.getInputStream()
               : conn.getErrorStream();
 
-      return new StripeResponseStream(responseCode, headers, responseStream);
+      return new SPResponseStream(responseCode, headers, responseStream);
 
     } catch (IOException e) {
       throw new ApiConnectionException(
@@ -73,7 +73,7 @@ public class HttpURLConnectionClient extends HttpClient {
                   + "Please check your internet connection and try again. If this problem persists,"
                   + "you should check Stripe's service status at https://twitter.com/stripestatus,"
                   + " or let us know at support@stripe.com.",
-              Stripe.getApiBase(), e.getMessage()),
+            SPAPI.getApiBase(), e.getMessage()),
           e);
     }
   }
@@ -86,8 +86,8 @@ public class HttpURLConnectionClient extends HttpClient {
    * @throws ApiConnectionException if an error occurs when sending or receiving
    */
   @Override
-  public StripeResponse request(StripeRequest request) throws ApiConnectionException {
-    final StripeResponseStream responseStream = requestStream(request);
+  public SPResponse request(SPRequest request) throws ApiConnectionException {
+    final SPResponseStream responseStream = requestStream(request);
     try {
       return responseStream.unstream();
     } catch (IOException e) {
@@ -97,12 +97,12 @@ public class HttpURLConnectionClient extends HttpClient {
                   + "Please check your internet connection and try again. If this problem persists,"
                   + "you should check Stripe's service status at https://twitter.com/stripestatus,"
                   + " or let us know at support@stripe.com.",
-              Stripe.getApiBase(), e.getMessage()),
+            SPAPI.getApiBase(), e.getMessage()),
           e);
     }
   }
 
-  static HttpHeaders getHeaders(StripeRequest request) {
+  static HttpHeaders getHeaders(SPRequest request) {
     Map<String, List<String>> userAgentHeadersMap = new HashMap<>();
 
     userAgentHeadersMap.put("User-Agent", Arrays.asList(buildUserAgentString()));
@@ -112,7 +112,7 @@ public class HttpURLConnectionClient extends HttpClient {
     return request.headers().withAdditionalHeaders(userAgentHeadersMap);
   }
 
-  private static HttpURLConnection createStripeConnection(StripeRequest request)
+  private static HttpURLConnection createStripeConnection(SPRequest request)
       throws IOException, ApiConnectionException {
     HttpURLConnection conn = null;
 

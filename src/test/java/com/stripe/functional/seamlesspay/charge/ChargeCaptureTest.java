@@ -1,10 +1,10 @@
 package com.stripe.functional.seamlesspay.charge;
 
 import com.seamlesspay.SPAPI;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPCharge;
+import com.stripe.exception.SPException;
+import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeCreateParams;
+import com.stripe.param.ChargeCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,18 +26,18 @@ class ChargeCaptureTest {
   }
 
   @Test
-  void testCaptureChargeSuccessfully() throws StripeException {
+  void testCaptureChargeSuccessfully() throws SPException {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    SPChargeCreateParams createParams = SPChargeCreateParams.builder()
+    ChargeCreateParams createParams = ChargeCreateParams.builder()
       .amount("1.00")
       .capture(false)
       .token(VALID_TOKEN).build();
-    SPCharge createdCharge = SPCharge.create(createParams, requestOptions);
+    Charge createdCharge = Charge.create(createParams, requestOptions);
     log.info("created charge={}", createdCharge);
 
     //when
-    SPCharge capturedCharge = createdCharge.capture(requestOptions);
+    Charge capturedCharge = createdCharge.capture(requestOptions);
 
     //then
     assertNotNull(capturedCharge);

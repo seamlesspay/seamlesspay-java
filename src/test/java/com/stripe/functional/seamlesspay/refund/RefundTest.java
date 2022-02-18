@@ -2,13 +2,12 @@ package com.stripe.functional.seamlesspay.refund;
 
 import com.seamlesspay.SPAPI;
 import com.stripe.exception.ApiException;
-import com.stripe.exception.StripeException;
-import com.stripe.model.SPCharge;
-import com.stripe.model.SPRefund;
-import com.stripe.model.SPRefundCollection;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.SPException;
+import com.stripe.model.*;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.SPChargeCreateParams;
-import com.stripe.param.SPRefundCreateParams;
+import com.stripe.param.ChargeCreateParams;
+import com.stripe.param.RefundCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.stripe.model.SPCurrency.USD;
+import static com.stripe.model.Currency.USD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -39,14 +38,14 @@ class RefundTest {
   @Test
   void testGet401IfInvalidApiKey() {
     //given
-    SPRefundCreateParams params = new SPRefundCreateParams();
+    RefundCreateParams params = new RefundCreateParams();
     RequestOptions requestOptions = RequestOptions.builder()
       .setApiKey(DEV_API_KEY + "123")
       .build();
 
 
     //when
-    ApiException exception = assertThrows(ApiException.class, () -> SPRefund.create(params, requestOptions));
+    AuthenticationException exception = assertThrows(AuthenticationException.class, () -> Refund.create(params, requestOptions));
 
     //then
     assertEquals(401, exception.getStatusCode());
@@ -56,10 +55,10 @@ class RefundTest {
   @Test
   void testReturns422IfMissingRequiredFieldToken() {
     //given
-    SPRefundCreateParams params = SPRefundCreateParams.builder().build();
+    RefundCreateParams params = RefundCreateParams.builder().build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> SPRefund.create(params, defaultRequestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Refund.create(params, defaultRequestOptions));
 
     //then
     assertEquals(422, ex.getStatusCode());
@@ -67,19 +66,23 @@ class RefundTest {
   }
 
   @Test
-  void testCreateRefundSuccess() throws StripeException {
+  void testCreateRefundSuccess() throws SPException {
     //given
-    SPChargeCreateParams params = SPChargeCreateParams.builder()
+    ChargeCreateParams params = ChargeCreateParams.builder()
       .amount("1.00")
-      .capture(false)
+      .capture(true)
       .currency(USD)
       .token(VALID_TOKEN)
       .build();
-    SPCharge charge = SPCharge.create(params, defaultRequestOptions);
+    Charge charge = Charge.create(params, defaultRequestOptions);
+    Charge charge2 = Charge.create(params, defaultRequestOptions);
+    BatchCloseResult closeBatchResult = Batch.close(charge.getBatch(), defaultRequestOptions);
+    assertNotNull(closeBatchResult);
+    Batch.retrieveTransactions(charge.getBatch(), defaultRequestOptions);
 
     //when
-    SPRefundCreateParams refundParams = SPRefundCreateParams.builder().transactionID(charge.getId()).build();
-    SPRefund refund = SPRefund.create(refundParams, defaultRequestOptions);
+    RefundCreateParams refundParams = RefundCreateParams.builder().transactionID(charge.getId()).build();
+    Refund refund = Refund.create(refundParams, defaultRequestOptions);
     log.info("created refund={}", refund);
 
     //then
@@ -87,11 +90,11 @@ class RefundTest {
   }
 
   @Test
-  void testListRefundSuccess() throws StripeException {
+  void testListRefundSuccess() throws SPException {
     //given
 
     //when
-    SPRefundCollection list = SPRefund.list(defaultRequestOptions);
+    RefundCollection list = Refund.list(defaultRequestOptions);
     log.info("got refunds list={}", list);
 
     //then
@@ -99,12 +102,12 @@ class RefundTest {
   }
 
   @Test
-  void testRetrieveRefundSuccess() throws StripeException {
+  void testRetrieveRefundSuccess() throws SPException {
     //given
     String existingRefundId = "TR_01E64499PFHYRNYZR8NRH687PG";
 
     //when
-    SPRefund refund = SPRefund.retrieve(existingRefundId, defaultRequestOptions);
+    Refund refund = Refund.retrieve(existingRefundId, defaultRequestOptions);
     log.info("got refund={}", refund);
 
     //then
