@@ -49,31 +49,7 @@ public abstract class SPAPI {
   }
 
   /**
-   * (FOR TESTING ONLY) If you'd like your OAuth requests to hit your own (mocked) server, you can
-   * set this up here by overriding the base Connect URL.
-   */
-//  public static void overrideConnectBase(final String overriddenConnectBase) {
-//    connectBase = overriddenConnectBase;
-//  }
-//
-//  public static String getConnectBase() {
-//    return connectBase;
-//  }
-
-  /**
-   * (FOR TESTING ONLY) If you'd like your upload requests to hit your own (mocked) server, you can
-   * set this up here by overriding the base api URL.
-   */
-//  public static void overrideUploadBase(final String overriddenUploadBase) {
-//    uploadBase = overriddenUploadBase;
-//  }
-//
-//  public static String getUploadBase() {
-//    return uploadBase;
-//  }
-
-  /**
-   * Set proxy to tunnel all Stripe connections.
+   * Set proxy to tunnel all SeamlessPay connections.
    *
    * @param proxy proxy host and port setting
    */
@@ -98,7 +74,7 @@ public abstract class SPAPI {
   }
 
   /**
-   * Sets the timeout value that will be used for making new connections to the Stripe API (in
+   * Sets the timeout value that will be used for making new connections to the SeamlessPay API (in
    * milliseconds).
    *
    * @param timeout timeout value in milliseconds
@@ -121,7 +97,7 @@ public abstract class SPAPI {
 
   /**
    * Sets the timeout value that will be used when reading data from an established connection to
-   * the Stripe API (in milliseconds).
+   * the SeamlessPay API (in milliseconds).
    *
    * <p>Note that this value should be set conservatively because some API requests can take time
    * and a short timeout increases the likelihood of causing a problem in the backend.
@@ -176,12 +152,12 @@ public abstract class SPAPI {
   }
 
   /**
-   * Sets information about your application. The information is passed along to Stripe.
+   * Sets information about your application. The information is passed along to SeamlessPay.
    *
    * @param name Name of your application (e.g. "MyAwesomeApp")
    * @param version Version of your application (e.g. "1.2.34")
    * @param url Website for your application (e.g. "https://myawesomeapp.info")
-   * @param partnerId Your Stripe Partner ID (e.g. "pp_partner_1234")
+   * @param partnerId Your SeamlessPay Partner ID (e.g. "pp_partner_1234")
    */
   public static void setAppInfo(String name, String version, String url, String partnerId) {
     if (appInfo == null) {
