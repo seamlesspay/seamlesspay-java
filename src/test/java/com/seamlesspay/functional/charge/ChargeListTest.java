@@ -7,7 +7,7 @@ import com.seamlesspay.model.Charge;
 import com.seamlesspay.model.ChargeCollection;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +17,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@Slf4j
 class ChargeListTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   public static final String VALID_TOKEN = "TKN_01EXMB975XXG1XA3MATBNBR4QF";
@@ -58,7 +59,7 @@ class ChargeListTest {
 
     //when
     ChargeCollection chargeCollection = Charge.list(requestOptions);
-    log.info("charge collection = {}", chargeCollection);
+    log.info("charge collection = %s", chargeCollection);
 
     //then
     assertNotNull(chargeCollection.getTotal());

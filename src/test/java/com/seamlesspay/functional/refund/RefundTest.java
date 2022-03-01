@@ -8,7 +8,7 @@ import com.seamlesspay.model.*;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
 import com.seamlesspay.param.RefundCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +18,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static com.seamlesspay.model.Currency.USD;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class RefundTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   private static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   private static final String VALID_TOKEN = "tok_mastercard";
@@ -81,7 +82,7 @@ class RefundTest {
     //when
     RefundCreateParams refundParams = RefundCreateParams.builder().transactionID(charge.getId()).build();
     Refund refund = Refund.create(refundParams, defaultRequestOptions);
-    log.info("created refund={}", refund);
+    log.debug("created refund=%s", refund);
 
     //then
     assertNotNull(refund);
@@ -93,7 +94,7 @@ class RefundTest {
 
     //when
     RefundCollection list = Refund.list(defaultRequestOptions);
-    log.info("got refunds list={}", list);
+    log.info("got refunds list=%s", list);
 
     //then
     assertNotNull(list);
@@ -106,7 +107,7 @@ class RefundTest {
 
     //when
     Refund refund = Refund.retrieve(existingRefundId, defaultRequestOptions);
-    log.info("got refund={}", refund);
+    log.debug("got refund=%s", refund);
 
     //then
     assertEquals(existingRefundId, refund.getId());

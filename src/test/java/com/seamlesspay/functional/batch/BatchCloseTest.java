@@ -9,7 +9,7 @@ import com.seamlesspay.model.BatchCloseResult;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +19,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static com.seamlesspay.model.Currency.USD;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class BatchCloseTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   private static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   private static final String VALID_TOKEN = "tok_mastercard";
@@ -71,19 +72,14 @@ class BatchCloseTest {
       .amount("1.00")
       .capture(true)
       .currency(USD)
-//      .cvv("123")
       .token(VALID_TOKEN)
       .build();
     Charge charge = Charge.create(params, defaultRequestOptions);
 
     //when
     BatchCloseResult closeResult = Batch.close(charge.getBatch(), defaultRequestOptions);
-//    SPRefundCreateParams refundParams = SPRefundCreateParams.builder().transactionID(charge.getId()).build();
-//    SPBatch batch = SPBatch.close(refundParams, defaultRequestOptions);
-    log.info("batch close result={}", closeResult);
+    log.info("batch close result=%s", closeResult);
 
-    //then
-//    assertNotNull(refund);
   }
 
 }

@@ -1,13 +1,15 @@
 package com.seamlesspay.net;
 
+import com.seamlesspay.util.SPLogger;
 import com.seamlesspay.util.StreamUtils;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-@Slf4j
 public class SPResponseStream extends AbstractSPResponse<InputStream> {
+
+  private static final SPLogger log = SPLogger.get(SPResponseStream.class);
+
   /**
    * Initializes a new instance of the {@link SPResponseStream} class.
    *
@@ -27,7 +29,7 @@ public class SPResponseStream extends AbstractSPResponse<InputStream> {
    */
   SPResponse unstream() throws IOException {
     final String bodyString = StreamUtils.readToEnd(this.body, ApiResource.CHARSET);
-    log.debug("response body={}", bodyString);
+    log.debug("response body=%s", bodyString);
     this.body.close();
     return new SPResponse(this.code, this.headers, bodyString);
   }

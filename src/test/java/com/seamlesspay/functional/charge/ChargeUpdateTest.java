@@ -8,7 +8,7 @@ import com.seamlesspay.exception.SPException;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeUpdateParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +16,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class ChargeUpdateTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
 
@@ -97,7 +98,7 @@ class ChargeUpdateTest {
     //given
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
     Charge existingCharge = Charge.retrieve("TR_01FVFJ0XX7KMBYB64KRMFPQN6W", requestOptions);
-    log.info("got existing charge={}", existingCharge);
+    log.info("got existing charge=%s", existingCharge);
 
     //when
     ChargeUpdateParams params = ChargeUpdateParams.builder().build();
@@ -116,7 +117,7 @@ class ChargeUpdateTest {
 
     double currentAmount = Double.parseDouble(existingCharge.getAmount());
     double newAmount = currentAmount + 1;
-    log.info("current amount={} new={}", currentAmount, newAmount);
+    log.info("current amount=%f new=%f", currentAmount, newAmount);
 
     //when
     String newAmountString = String.format(java.util.Locale.US, "%.2f", newAmount);

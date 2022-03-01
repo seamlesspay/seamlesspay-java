@@ -8,7 +8,7 @@ import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
 import com.seamlesspay.param.ChargeVoidParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +16,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class ChargeVoidTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   public static final String VALID_TOKEN = "tok_mastercard";
@@ -68,7 +69,7 @@ class ChargeVoidTest {
     RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
     ChargeCreateParams createParams = ChargeCreateParams.builder().amount("1.00").token(VALID_TOKEN).build();
     Charge charge = Charge.create(createParams, requestOptions);
-    log.info("created charge={}", charge);
+    log.info("created charge=%s", charge);
 
     //when
     ChargeVoidParams voidParams = ChargeVoidParams.builder().transactionId(charge.getId()).build();

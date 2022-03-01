@@ -17,11 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import com.seamlesspay.util.SPLogger;
 import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class HttpURLConnectionClient extends HttpClient {
+
+  private static final SPLogger log = SPLogger.get(HttpURLConnectionClient.class);
 
   private static boolean NETWORK_LOGS_ENABLED = false;
 
@@ -56,8 +57,8 @@ public class HttpURLConnectionClient extends HttpClient {
       final int responseCode = conn.getResponseCode();
 
       final HttpHeaders headers = HttpHeaders.of(conn.getHeaderFields());
-      log.debug("response: code={}", responseCode);
-      log.trace("response: headers={}", headers);
+      log.debug("response: code=%d", responseCode);
+      log.trace("response: headers=%s", headers);
 
       final InputStream responseStream =
           (responseCode >= 200 && responseCode < 300)
@@ -112,7 +113,7 @@ public class HttpURLConnectionClient extends HttpClient {
       throws IOException, ApiConnectionException {
     HttpURLConnection conn = null;
 
-    log.debug("request url={}", request.url());
+    log.debug("request url=%s", request.url());
     if (request.options().getConnectionProxy() != null) {
       conn =
           (HttpURLConnection) request.url().openConnection(request.options().getConnectionProxy());
@@ -132,20 +133,20 @@ public class HttpURLConnectionClient extends HttpClient {
     conn.setUseCaches(false);
     for (Map.Entry<String, List<String>> entry : getHeaders(request).map().entrySet()) {
       String value = String.join(",", entry.getValue());
-      log.trace("setting header: name={}; value={}", entry.getKey(), value);
+      log.trace("setting header: name=%s; value=%s", entry.getKey(), value);
       conn.setRequestProperty(entry.getKey(), value);
     }
 
     conn.setRequestMethod(request.method().name());
-    log.debug("request method={}", request.method().name());
+    log.debug("request method=%s", request.method().name());
 
     if (request.content() != null) {
       conn.setDoOutput(true);
       conn.setRequestProperty("Content-Type", request.content().contentType());
-      log.debug("setting header: name={}; value={}", "Content-Type", request.content().contentType());
+      log.debug("setting header: name=%s; value=%s", "Content-Type", request.content().contentType());
 
       @Cleanup OutputStream output = conn.getOutputStream();
-      log.debug("request content={}", new String(request.content().byteArrayContent(), ApiResource.CHARSET));
+      log.debug("request content=%s", new String(request.content().byteArrayContent(), ApiResource.CHARSET));
       output.write(request.content().byteArrayContent());
     }
 

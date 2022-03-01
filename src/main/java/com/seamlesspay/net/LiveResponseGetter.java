@@ -8,15 +8,16 @@ import com.seamlesspay.model.error.NotFoundError;
 import com.seamlesspay.model.error.SPError;
 import com.seamlesspay.model.error.UnprocessableError;
 import com.seamlesspay.model.SPObjectInterface;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-@Slf4j
 public class LiveResponseGetter implements ResponseGetter {
   private final HttpClient httpClient;
+
+  private static final SPLogger log = SPLogger.get(LiveResponseGetter.class);
 
   /**
    * Initializes a new instance of the {@link LiveResponseGetter} class with default
@@ -59,7 +60,7 @@ public class LiveResponseGetter implements ResponseGetter {
     try {
       resource = ApiResource.GSON.fromJson(responseBody, clazz);
     } catch (JsonSyntaxException e) {
-      log.debug("failed to parse response={}", responseBody, e);
+      log.debug("failed to parse response=%s", responseBody, e);
       raiseMalformedJsonError(responseBody, responseCode, requestId, e);
     }
 
@@ -118,12 +119,12 @@ public class LiveResponseGetter implements ResponseGetter {
 
   private static void handleApiError(SPResponse response) throws SPException {
 
-    log.debug("handling error from response={}", response);
+    log.debug("handling error from response=%s", response);
     switch (response.code()) {
       case 400:
         try {
           SPError error = ApiResource.GSON.fromJson(response.body(), SPError.class);
-          log.debug("extracted error object={}", error);
+          log.debug("extracted error object=%s", error);
           if ("idempotency_error".equals(error.getClassName())) {
               throw new IdempotencyException(error.getMessage(), response.requestId(), error.getCode(), response.code());
           }
@@ -142,7 +143,7 @@ public class LiveResponseGetter implements ResponseGetter {
       case 401:
         try {
           NotAuthenticatedError error = ApiResource.GSON.fromJson(response.body(), NotAuthenticatedError.class);
-          log.debug("extracted error object={}", error);
+          log.debug("extracted error object=%s", error);
           String message = String.format("Not authenticated error, message=%s", error.getMessage());
           throw new AuthenticationException(message, response.requestId(), null, response.code(), error);
         } catch (JsonSyntaxException e) {
@@ -153,7 +154,7 @@ public class LiveResponseGetter implements ResponseGetter {
       case 404:
         try {
           NotFoundError error = ApiResource.GSON.fromJson(response.body(), NotFoundError.class);
-          log.debug("extracted error object={}", error);
+          log.debug("extracted error object=%s", error);
           String message = String.format("Not found error, message=%s", error.getMessage());
           throw new ApiException(message, response.requestId(), null, response.code(), error);
         } catch (JsonSyntaxException e) {
@@ -164,7 +165,7 @@ public class LiveResponseGetter implements ResponseGetter {
       case 422:
         try {
           UnprocessableError error = ApiResource.GSON.fromJson(response.body(), UnprocessableError.class);
-          log.debug("extracted error object={}", error);
+          log.debug("extracted error object=%s", error);
           String message = String.format("Unprocessable error, message=%s", error.getMessage());
           throw new ApiException(message, response.requestId(), null, response.code(), error);
         } catch (JsonSyntaxException e) {
@@ -175,7 +176,7 @@ public class LiveResponseGetter implements ResponseGetter {
       default:
         try {
           SPError error = ApiResource.GSON.fromJson(response.body(), SPError.class);
-          log.debug("extracted error object={}", error);
+          log.debug("extracted error object=%s", error);
           throw new ApiException(error.getMessage(), response.requestId(), error.getCode(), response.code(), error);
         } catch (JsonSyntaxException e) {
           raiseMalformedJsonError(response.body(), response.code(), response.requestId(), e);

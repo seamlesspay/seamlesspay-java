@@ -5,17 +5,18 @@ import com.seamlesspay.exception.SPException;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class ChargeCaptureTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   public static final String VALID_TOKEN = "tok_mastercard";
@@ -34,7 +35,7 @@ class ChargeCaptureTest {
       .capture(false)
       .token(VALID_TOKEN).build();
     Charge createdCharge = Charge.create(createParams, requestOptions);
-    log.info("created charge={}", createdCharge);
+    log.info("created charge=%s", createdCharge);
 
     //when
     Charge capturedCharge = createdCharge.capture(requestOptions);

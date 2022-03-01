@@ -6,7 +6,7 @@ import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
-import lombok.extern.slf4j.Slf4j;
+import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +15,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @RunWith(MockitoJUnitRunner.class)
 class ChargeRetrieveTest {
+
+  private static final SPLogger log = SPLogger.get();
 
   public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
   public static final String EXISTING_TRANSACTION_ID = "TR_01E5DR09Z6FCS1TBYMNVQC4QXC";
