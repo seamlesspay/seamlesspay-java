@@ -23,13 +23,13 @@ public class Charge extends ApiResource {
   public static final String CHARGES_URL_PATH = "/charges";
 
   /**
-   * The ID of base transaction. Length <= 31 characters
+   * The ID of base transaction. Length {@literal <}= 31 characters
    */
   @SerializedName("id")
   private String id;
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length <= 12 characters
+   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   private String amount;
@@ -122,7 +122,7 @@ public class Charge extends ApiResource {
   private String surchargeFeeAmount;
 
   /**
-   * The payment method (token) from pan-vault. Length string <= 31 characters
+   * The payment method (token) from pan-vault. Length string {@literal <}= 31 characters
    */
   @SerializedName("token")
   private String token;

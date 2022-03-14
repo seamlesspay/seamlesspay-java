@@ -2,11 +2,13 @@ package com.seamlesspay.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -16,17 +18,74 @@ public class SPLoggerImpl implements SPLogger {
   private final Logger log;
 
   static {
+    loadLogConfig();
+  }
 
-    URL resource = SPLoggerImpl.class.getClassLoader().getResource("logging.properties");
-    try {
-      loadConfig(Paths.get(resource.toURI()));
-    } catch (URISyntaxException e) {
+  public static void loadLogConfig() {
+    Optional<URI> uriOptional = getConfigUri();
+    if (!uriOptional.isPresent()) {
+      return;
+    }
+    URI uri = uriOptional.get();
+
+    boolean isFileInJar = uri.toString().contains("!");
+    if (!isFileInJar) {
+      Path path = Paths.get(uri);
+      loadConfig(path);
+      return;
+    }
+
+    loadConfigFromJar(uri);
+  }
+
+  private static void loadConfigFromJar(URI uri) {
+    // if app is in the jar then using this solution - https://stackoverflow.com/a/22605905/838444
+    final String[] array = uri.toString().split("!");
+    final Map<String, String> env = new HashMap<>();
+    try (FileSystem fs = FileSystems.newFileSystem(URI.create(array[0]), env)) {
+      Path path = fs.getPath(array[1]);
+      loadConfig(path);
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  public SPLoggerImpl(Logger log) {
-    this.log = log;
+  private static Optional<URI> getConfigUri() {
+    URL resource = SPLoggerImpl.class.getClassLoader().getResource("logging.properties");
+    if (resource == null) {
+      System.out.println("failed to load logging configuration");
+      return Optional.empty();
+    }
+
+    try {
+      return Optional.of(resource.toURI());
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
+  }
+
+  public SPLoggerImpl() {
+    this(Logger.getLogger(""));
+  }
+
+  public SPLoggerImpl(Logger julLogger) {
+    log = julLogger;
+    setParentLevel();
+  }
+
+  /**
+   * By default a new logger gets INFO log level.
+   */
+  private void setParentLevel() {
+    if (log.getParent() == null) {
+      return;
+    }
+
+    Level parentLevel = log.getParent().getLevel();
+    if (log.getLevel() != parentLevel) {
+      log.setLevel(parentLevel);
+    }
   }
 
   public static void loadConfig(Path configPath) {

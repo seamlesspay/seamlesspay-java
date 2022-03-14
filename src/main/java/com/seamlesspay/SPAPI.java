@@ -12,7 +12,7 @@ public abstract class SPAPI {
 
   public static final String API_VERSION = "2020-08-01";
   public static final String PROD_API_BASE = "https://api.seamlesspay.com";
-  public static final String SANDBOX_API_BASE = "https://sandbox.seamlesspay.com";
+  public static final String SANDBOX_API_BASE = "https://api.seamlesspay.io";
   public static final String DEV_API_BASE = "https://api.seamlesspay.dev";
   public static final String VERSION = "0.0.1";
 

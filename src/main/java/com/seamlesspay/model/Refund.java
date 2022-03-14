@@ -26,13 +26,13 @@ public class Refund extends ApiResource {
   public static final String REFUNDS_URL_PATH = "/refunds";
 
   /**
-   * The ID of base transaction. Length <= 31 characters
+   * The ID of base transaction. Length {@literal <}= 31 characters
    */
   @SerializedName("id")
   private String id;
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length <= 12 characters
+   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   private String amount;
@@ -68,7 +68,7 @@ public class Refund extends ApiResource {
   private String ipAddress;
 
   /**
-   * The ID of batch. Length <= 31 characters
+   * The ID of batch. Length {@literal <}= 31 characters
    */
   @SerializedName("batch")
   private String batch;
@@ -104,7 +104,7 @@ public class Refund extends ApiResource {
   private String statusDescription;
 
   /**
-   * The payment method (token) from pan-vault. Length string <= 31 characters
+   * The payment method (token) from pan-vault. Length string {@literal <}= 31 characters
    */
   @SerializedName("token")
   private String token;

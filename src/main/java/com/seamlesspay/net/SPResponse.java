@@ -3,7 +3,7 @@ package com.seamlesspay.net;
 import lombok.ToString;
 
 /** A response from SeamlessPay's API, with body represented as a String. */
-@ToString
+@ToString(callSuper = true)
 public class SPResponse extends AbstractSPResponse<String> {
   /**
    * Initializes a new instance of the {@link SPResponse} class.

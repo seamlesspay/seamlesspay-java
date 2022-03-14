@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 public class ChargeVoidParams extends ApiRequestParams {
 
   /**
-   * The ID of base transaction. Length <= 31 characters
+   * The ID of base transaction. Length {@literal <}= 31 characters
    */
   @SerializedName("transactionID")
   String transactionId;

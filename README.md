@@ -163,6 +163,31 @@ The library uses [Project Lombok][lombok]. While it is not a requirement, you
 might want to install a [plugin][lombok-plugins] for your favorite IDE to
 facilitate development.
 
+
+## Logging
+
+SeamlessPay Java uses JUL API. By default it takes configuration from the `resources/logging.properties` file embedded into the jar.
+You can replace defulat configuration with your own by adding `logging.properties` to your `resources` folder.
+
+Here are major configuration options
+```properties
+# specifies list of log handlers
+handlers=java.util.logging.ConsoleHandler
+
+# each handler has its own log level separate from logger level
+java.util.logging.ConsoleHandler.level=FINER
+
+# specify global log level
+.level= FINE
+
+# specify log level for the SeamlessPay java library
+com.seamlesspay.level=FINE
+
+# customize log messages format
+java.util.logging.SimpleFormatter.format=%1$tF %1$tT.%1$tL %4$s %3$s: %5$s%6$s%n
+```
+See [logging configuration] for more configuration options. See [log messages formatting] for more details.
+
 [functional-tests]: https://github.com/seamlesspay/seamlesspay-java/tree/main/src/test/java/com/seamlesspay/functional
 [gson]: https://github.com/google/gson
 [idempotency-keys]: https://docs.seamlesspay.com/2020-08-01/#section/Idempotent-Requests
@@ -170,4 +195,5 @@ facilitate development.
 [lombok-plugins]: https://projectlombok.org/setup/overview
 [proguard]: https://www.guardsquare.com/en/products/proguard
 [seamlesspay]: https://seamlesspay.com
-
+[logging configuration]: https://docs.oracle.com/cd/E57471_01/bigData.100/data_processing_bdd/src/rdp_logging_config.html
+[log messages formatting]: https://docs.oracle.com/javase/7/docs/api/java/util/logging/SimpleFormatter.html#format(java.util.logging.LogRecord)

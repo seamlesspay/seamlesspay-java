@@ -9,11 +9,13 @@ import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.NonFinal;
 
 /** Common interface representing an HTTP response from SeamlessPay. */
 @Accessors(fluent = true)
+@ToString
 abstract class AbstractSPResponse<T> {
   /** The HTTP status code of the response. */
   int code;

@@ -17,7 +17,7 @@ import lombok.Getter;
 public class ChargeCreateParams extends ApiRequestParams {
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length <= 12 characters
+   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   String amount;
@@ -32,7 +32,7 @@ public class ChargeCreateParams extends ApiRequestParams {
   Currency currency;
 
   /**
-   * Length <= 4 characters
+   * Length {@literal <}= 4 characters
    */
   @SerializedName("cvv")
   String cvv;
@@ -71,7 +71,7 @@ public class ChargeCreateParams extends ApiRequestParams {
   String poNumber;
 
   /**
-   * Surcharge fee amount. Length <= 12 characters
+   * Surcharge fee amount. Length {@literal <}= 12 characters
    */
   @SerializedName("surchargeFeeAmount")
   String surchargeFeeAmount;
@@ -88,7 +88,7 @@ public class ChargeCreateParams extends ApiRequestParams {
   String orderID;
 
   /**
-   * string <= 31 characters. The payment method (token) from pan-vault
+   * string {@literal <}= 31 characters. The payment method (token) from pan-vault
    */
   @SerializedName("token")
   String token;

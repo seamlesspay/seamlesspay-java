@@ -14,7 +14,7 @@ import lombok.*;
 public class RefundCreateParams extends ApiRequestParams {
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length <= 12 characters
+   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   String amount;
@@ -42,7 +42,7 @@ public class RefundCreateParams extends ApiRequestParams {
   String metadata;
 
   /**
-   * Required. The ID of base transaction. Length <= 31 characters
+   * Required. The ID of base transaction. Length {@literal <}= 31 characters
    */
   @SerializedName("transactionID")
   String transactionID;

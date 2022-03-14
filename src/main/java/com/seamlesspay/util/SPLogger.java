@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 public interface SPLogger {
 
   static SPLogger get() {
-    Logger julLogger = Logger.getLogger("default");
+    Logger julLogger = Logger.getLogger("");
     return new SPLoggerImpl(julLogger);
   }
 
