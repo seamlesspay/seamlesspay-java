@@ -188,6 +188,47 @@ java.util.logging.SimpleFormatter.format=%1$tF %1$tT.%1$tL %4$s %3$s: %5$s%6$s%n
 ```
 See [logging configuration] for more configuration options. See [log messages formatting] for more details.
 
+## Publishing to Maven Central
+
+### Prerequisites
+
+The following steps should be performed once.
+* copy `.gnupg` folder to the user's `HOME` folder
+* put sensitive data to the `~/.gradle/gradle.properties` file. File format is the following:
+```properties
+NEXUS_USERNAME=<username>
+NEXUS_PASSWORD=<password>
+
+signing.gnupg.keyName=<keyName>
+signing.gnupg.passphrase=<passphrase>
+```
+Note: for later Gradle versions properties names are changed (see https://stackoverflow.com/a/61806762/838444 for details)
+* install `gpg`. For Mac OS: `brew install gnupg`
+* also create `gpg2` link if it is not created automatically:
+ ```shell
+ $sudo ln -s /usr/local/bin/gpg /usr/local/bin/gpg2
+ ```
+
+### Gradle deployment
+
+[Gradle Nexus Publish Plugin] is used for automatic publishing to Maven Central repository.
+1. update `VERSION_NAME` in the `gradle.properties`. Note: having `SNAPSHOT` suffix will perform testing deployment and will not publish to Maven Central.
+2. run command
+```shell
+$ ./gradlew publish closeAndReleaseSonatypeStagingRepository
+```
+If everything is ok then build will be uploaded to public repository https://s01.oss.sonatype.org/content/groups/public/com/seamlesspay/seamlesspay-java/
+When it appears there this version can be referenced in third-part application. Maven or gradle will be able to download a new version.
+But in https://search.maven.org/ it will appear approximately 8 hours later.
+
+### Manual deployment
+
+It is possible to create a bundle manually and upload to the Sonatype.
+Read about this approach here:
+
+* [Manually Deploying to OSSRH]
+* [Releasing Deployment from OSSRH to the Central Repository]
+
 [functional-tests]: https://github.com/seamlesspay/seamlesspay-java/tree/main/src/test/java/com/seamlesspay/functional
 [gson]: https://github.com/google/gson
 [idempotency-keys]: https://docs.seamlesspay.com/2020-08-01/#section/Idempotent-Requests
@@ -197,3 +238,6 @@ See [logging configuration] for more configuration options. See [log messages fo
 [seamlesspay]: https://seamlesspay.com
 [logging configuration]: https://docs.oracle.com/cd/E57471_01/bigData.100/data_processing_bdd/src/rdp_logging_config.html
 [log messages formatting]: https://docs.oracle.com/javase/7/docs/api/java/util/logging/SimpleFormatter.html#format(java.util.logging.LogRecord)
+[Gradle Nexus Publish Plugin]: https://github.com/gradle-nexus/publish-plugin
+[Manually Deploying to OSSRH]: https://central.sonatype.org/publish/publish-manual/
+[Releasing Deployment from OSSRH to the Central Repository]: https://central.sonatype.org/publish/release/

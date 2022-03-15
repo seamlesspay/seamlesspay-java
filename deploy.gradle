@@ -8,7 +8,7 @@
 
 apply plugin: "maven-publish"
 apply plugin: "signing"
-apply plugin: "io.codearte.nexus-staging"
+apply plugin: "io.github.gradle-nexus.publish-plugin"
 
 def isReleaseBuild() {
     return VERSION_NAME.contains("SNAPSHOT") == false
@@ -53,14 +53,6 @@ afterEvaluate { project ->
         sign publishing.publications
     }
 
-    nexusStaging {
-        packageGroup = GROUP
-        numberOfRetries = 40
-        delayBetweenRetriesInMillis = 4000
-        username = getRepositoryUsername()
-        password = getRepositoryPassword()
-    }
-
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -101,6 +93,7 @@ afterEvaluate { project ->
                 }
             }
         }
+
         repositories {
             maven {
                 name = "nexus"
@@ -111,6 +104,27 @@ afterEvaluate { project ->
                     username = getRepositoryUsername()
                     password = getRepositoryPassword()
                 }
+            }
+        }
+
+        nexusPublishing {
+            packageGroup = GROUP
+            repositories {
+                sonatype {
+                    nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                    snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+
+                    //defaults to project properties 'sonatypeUsername' and 'sonatypePassword', where 'sonatype' is name of configured repository
+                    username = getRepositoryUsername()
+                    password = getRepositoryPassword()
+                }
+            }
+            clientTimeout = Duration.ofSeconds(300)
+            connectTimeout = Duration.ofSeconds(60)
+
+            transitionCheckOptions {
+                maxRetries.set(40)
+                delayBetween.set(java.time.Duration.ofMillis(4000))
             }
         }
     }

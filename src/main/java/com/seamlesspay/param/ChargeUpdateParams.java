@@ -15,7 +15,7 @@ import lombok.Getter;
 public class ChargeUpdateParams extends ApiRequestParams {
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
+   * String with 2 decimal places e.g "25.00". Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   String amount;
@@ -27,13 +27,13 @@ public class ChargeUpdateParams extends ApiRequestParams {
   private TransactionMethod method;
 
   /**
-   * String with 2 decimal places e.g “25.00”.
+   * String with 2 decimal places e.g "25.00".
    */
   @SerializedName("tip")
   String tip;
 
   /**
-   * String with 2 decimal places e.g “25.00”.
+   * String with 2 decimal places e.g "25.00".
    */
   @SerializedName("taxAmount")
   String taxAmount;

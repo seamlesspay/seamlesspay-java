@@ -34,7 +34,7 @@ public class Order {
     String discountAmount;
 
     /**
-     * String with 2 decimal places e.g “25.00”.
+     * String with 2 decimal places e.g "25.00".
      */
     @SerializedName("unitCost")
     String unitCost;
@@ -58,7 +58,7 @@ public class Order {
     String description;
 
     /**
-     * String with 2 decimal places e.g “25.00”.
+     * String with 2 decimal places e.g "25.00".
       */
     @SerializedName("taxAmount")
     String taxAmount;
@@ -76,7 +76,7 @@ public class Order {
     String upc;
 
     /**
-     * String with 2 decimal places e.g “25.00”.
+     * String with 2 decimal places e.g "25.00".
       */
     @SerializedName("lineTotal")
     String lineTotal;

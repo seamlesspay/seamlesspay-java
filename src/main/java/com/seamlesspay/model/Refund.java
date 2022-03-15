@@ -32,7 +32,7 @@ public class Refund extends ApiResource {
   private String id;
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
+   * String with 2 decimal places e.g "25.00". Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   private String amount;
@@ -150,13 +150,13 @@ public class Refund extends ApiResource {
   private Order order;
 
   /**
-   * String with 2 decimal places e.g “25.00”
+   * String with 2 decimal places e.g "25.00"
    */
   @SerializedName("surchargeFeeAmount")
   private String surchargeFeeAmount;
 
   /**
-   * String with 2 decimal places e.g “25.00”
+   * String with 2 decimal places e.g "25.00"
    */
   @SerializedName("tip")
   private String tip;

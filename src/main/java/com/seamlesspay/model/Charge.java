@@ -29,7 +29,7 @@ public class Charge extends ApiResource {
   private String id;
 
   /**
-   * String with 2 decimal places e.g “25.00”. Length {@literal <}= 12 characters
+   * String with 2 decimal places e.g "25.00". Length {@literal <}= 12 characters
    */
   @SerializedName("amount")
   private String amount;
@@ -116,7 +116,7 @@ public class Charge extends ApiResource {
   private String statusDescription;
 
   /**
-   * String with 2 decimal places e.g “25.00”
+   * String with 2 decimal places e.g "25.00"
    */
   @SerializedName("surchargeFeeAmount")
   private String surchargeFeeAmount;
@@ -128,7 +128,7 @@ public class Charge extends ApiResource {
   private String token;
 
   /**
-   * String with 2 decimal places e.g “25.00”
+   * String with 2 decimal places e.g "25.00"
    */
   @SerializedName("tip")
   private String tip;
@@ -157,7 +157,7 @@ public class Charge extends ApiResource {
 
   /**
    * To charge a credit card or other payment source, you create a <code>Charge</code> object. If
-   * your API key is in test mode, the supplied payment source (e.g., card) won’t actually be
+   * your API key is in test mode, the supplied payment source (e.g., card) won't actually be
    * charged, although everything else will occur as if in live mode. (SeamlessPay assumes that the
    * charge would have completed successfully).
    */
@@ -167,7 +167,7 @@ public class Charge extends ApiResource {
 
   /**
    * To charge a credit card or other payment source, you create a <code>Charge</code> object. If
-   * your API key is in test mode, the supplied payment source (e.g., card) won’t actually be
+   * your API key is in test mode, the supplied payment source (e.g., card) won't actually be
    * charged, although everything else will occur as if in live mode. (SeamlessPay assumes that the
    * charge would have completed successfully).
    */
@@ -179,7 +179,7 @@ public class Charge extends ApiResource {
 
   /**
    * To charge a credit card or other payment source, you create a <code>Charge</code> object. If
-   * your API key is in test mode, the supplied payment source (e.g., card) won’t actually be
+   * your API key is in test mode, the supplied payment source (e.g., card) won't actually be
    * charged, although everything else will occur as if in live mode. (SeamlessPay assumes that the
    * charge would have completed successfully).
    */
@@ -189,7 +189,7 @@ public class Charge extends ApiResource {
 
   /**
    * To charge a credit card or other payment source, you create a <code>Charge</code> object. If
-   * your API key is in test mode, the supplied payment source (e.g., card) won’t actually be
+   * your API key is in test mode, the supplied payment source (e.g., card) won't actually be
    * charged, although everything else will occur as if in live mode. (SeamlessPay assumes that the
    * charge would have completed successfully).
    */
