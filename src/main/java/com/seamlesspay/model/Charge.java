@@ -224,7 +224,7 @@ public class Charge extends ApiResource {
    * provided will be left unchanged.
    */
   public Charge update(ChargeUpdateParams params) throws SPException {
-    return update(params, (RequestOptions) null);
+    return update(params, null);
   }
 
   /**
@@ -239,15 +239,15 @@ public class Charge extends ApiResource {
     return ApiResource.request(RequestMethod.PUT, url, params, Charge.class, options);
   }
 
-  public Charge voidCharge(ChargeVoidParams params) throws SPException {
+  public static Charge voidCharge(ChargeVoidParams params) throws SPException {
     return voidCharge(params, null);
   }
 
-  public Charge voidCharge(ChargeVoidParams params, RequestOptions options) throws SPException {
+  public static Charge voidCharge(ChargeVoidParams params, RequestOptions options) throws SPException {
     String url = String.format(
       "%s%s",
       SPAPI.getApiBase(),
-      String.format(CHARGES_URL_PATH + "/%s", ApiResource.urlEncodeId(this.getId())));
+      String.format("%s/%s", CHARGES_URL_PATH, ApiResource.urlEncodeId(params.getTransactionId())));
     return ApiResource.request(RequestMethod.DELETE, url, params, Charge.class, options);
   }
 

@@ -3,6 +3,7 @@ package com.seamlesspay.functional.charge;
 import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.model.ChargeCollection;
 import com.seamlesspay.net.RequestOptions;
@@ -21,15 +22,15 @@ class ChargeListTest {
 
   private static final SPLogger log = SPLogger.get();
 
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "TKN_01EXMB975XXG1XA3MATBNBR4QF";
+  public static final Environment env = new Environment();
 
   @InjectMocks
   private SPAPI api;
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
@@ -37,7 +38,7 @@ class ChargeListTest {
     //given
     ChargeCreateParams params = ChargeCreateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .setSeamlessPayAccount("SPAccount")
       .build();
 
@@ -53,12 +54,8 @@ class ChargeListTest {
   void testListChargesSuccessfully() throws SPException {
     //given
 
-    RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY)
-      .build();
-
     //when
-    ChargeCollection chargeCollection = Charge.list(requestOptions);
+    ChargeCollection chargeCollection = Charge.list();
     log.info("charge collection = %s", chargeCollection);
 
     //then

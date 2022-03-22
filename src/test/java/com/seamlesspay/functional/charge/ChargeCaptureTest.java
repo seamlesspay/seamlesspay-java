@@ -2,6 +2,7 @@ package com.seamlesspay.functional.charge;
 
 import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
@@ -17,23 +18,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ChargeCaptureTest {
 
   private static final SPLogger log = SPLogger.get();
-
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "tok_mastercard";
+  private static final Environment ENV = new Environment();
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.overrideApiBase(ENV.getApiBase());
   }
 
   @Test
   void testCaptureChargeSuccessfully() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
+    RequestOptions requestOptions = RequestOptions.builder().setApiKey(ENV.getApiKey()).build();
     ChargeCreateParams createParams = ChargeCreateParams.builder()
       .amount("1.00")
       .capture(false)
-      .token(VALID_TOKEN).build();
+      .token(ENV.getValidToken()).build();
     Charge createdCharge = Charge.create(createParams, requestOptions);
     log.info("created charge=%s", createdCharge);
 

@@ -28,7 +28,7 @@ public class BatchCloseResult extends ApiResource {
 
 
   @Data
-  private static class TransactionData {
+  public static class TransactionData {
 
     /**
      * Count of affected transactions.
@@ -44,7 +44,7 @@ public class BatchCloseResult extends ApiResource {
   }
 
   @Data
-  private static class Input {
+  public static class Input {
 
     /**
      * The batch's unique identifier

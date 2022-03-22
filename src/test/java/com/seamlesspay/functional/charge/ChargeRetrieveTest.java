@@ -4,6 +4,7 @@ import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.ApiException;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.util.SPLogger;
@@ -19,23 +20,24 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChargeRetrieveTest {
 
   private static final SPLogger log = SPLogger.get();
+  public static final Environment env = new Environment();
 
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String EXISTING_TRANSACTION_ID = "TR_01E5DR09Z6FCS1TBYMNVQC4QXC";
+  public static final String EXISTING_TRANSACTION_ID = "TR_01FYF7ZFM3MXECVJ4BKWK0HQY1";
 
   @InjectMocks
   private SPAPI api;
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
   void testReturns401OnInvalidApiKey() {
     //given
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .build();
 
     //when
@@ -49,12 +51,9 @@ class ChargeRetrieveTest {
   @Test
   void testReturns404IfInvalidTransactionId() {
     //given
-    RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY)
-      .build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> Charge.retrieve("not_existing_transaction_id", requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Charge.retrieve("not_existing_transaction_id"));
     log.info("error", ex);
 
     //then
@@ -65,12 +64,9 @@ class ChargeRetrieveTest {
   @Test
   void testRetrieveChargeSuccessfully() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY)
-      .build();
 
     //when
-    Charge charge = Charge.retrieve(EXISTING_TRANSACTION_ID, requestOptions);
+    Charge charge = Charge.retrieve(EXISTING_TRANSACTION_ID);
     log.info("got charge={}", charge);
 
     //then

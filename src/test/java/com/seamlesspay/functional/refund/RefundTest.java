@@ -4,6 +4,7 @@ import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.ApiException;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.*;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
@@ -23,17 +24,15 @@ class RefundTest {
 
   private static final SPLogger log = SPLogger.get();
 
-  private static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  private static final String VALID_TOKEN = "tok_mastercard";
+  private static final Environment env = new Environment();
 
   @InjectMocks
   private SPAPI api;
-  private RequestOptions defaultRequestOptions;
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
-    defaultRequestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
@@ -41,9 +40,8 @@ class RefundTest {
     //given
     RefundCreateParams params = new RefundCreateParams();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .build();
-
 
     //when
     AuthenticationException exception = assertThrows(AuthenticationException.class, () -> Refund.create(params, requestOptions));
@@ -59,7 +57,7 @@ class RefundTest {
     RefundCreateParams params = RefundCreateParams.builder().build();
 
     //when
-    ApiException ex = assertThrows(ApiException.class, () -> Refund.create(params, defaultRequestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Refund.create(params));
 
     //then
     assertEquals(422, ex.getStatusCode());
@@ -67,21 +65,23 @@ class RefundTest {
   }
 
   @Test
-  void testCreateRefundSuccess() throws SPException {
+  void testCreateRefundSuccess() throws SPException, InterruptedException {
     //given
     ChargeCreateParams params = ChargeCreateParams.builder()
       .amount("1.00")
       .capture(true)
       .currency(USD)
-      .token(VALID_TOKEN)
+      .token(env.getValidToken())
       .build();
-    Charge charge = Charge.create(params, defaultRequestOptions);
-    BatchCloseResult closeBatchResult = Batch.close(charge.getBatch(), defaultRequestOptions);
+    Charge charge = Charge.create(params);
+    BatchCloseResult closeBatchResult = Batch.close(charge.getBatch());
     assertNotNull(closeBatchResult);
+
+    Thread.sleep(3_000);
 
     //when
     RefundCreateParams refundParams = RefundCreateParams.builder().transactionID(charge.getId()).build();
-    Refund refund = Refund.create(refundParams, defaultRequestOptions);
+    Refund refund = Refund.create(refundParams);
     log.debug("created refund=%s", refund);
 
     //then
@@ -93,7 +93,7 @@ class RefundTest {
     //given
 
     //when
-    RefundCollection list = Refund.list(defaultRequestOptions);
+    RefundCollection list = Refund.list();
     log.info("got refunds list=%s", list);
 
     //then
@@ -103,10 +103,10 @@ class RefundTest {
   @Test
   void testRetrieveRefundSuccess() throws SPException {
     //given
-    String existingRefundId = "TR_01E64499PFHYRNYZR8NRH687PG";
+    String existingRefundId = "TR_01FYA5ZFVTWYZ6VNPAG63ZCDVY";
 
     //when
-    Refund refund = Refund.retrieve(existingRefundId, defaultRequestOptions);
+    Refund refund = Refund.retrieve(existingRefundId);
     log.debug("got refund=%s", refund);
 
     //then

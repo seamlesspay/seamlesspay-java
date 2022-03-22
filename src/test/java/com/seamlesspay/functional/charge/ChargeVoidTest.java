@@ -4,6 +4,7 @@ import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.ApiException;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
@@ -21,26 +22,24 @@ class ChargeVoidTest {
 
   private static final SPLogger log = SPLogger.get();
 
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "tok_mastercard";
+  public static final Environment env = new Environment();
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
   void testReturns401OnInvalidApiKey() {
     //given
-    ChargeVoidParams params = ChargeVoidParams.builder().build();
+    ChargeVoidParams params = ChargeVoidParams.builder().transactionId("123").build();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .build();
 
     //when
-    Charge charge = new Charge();
-    charge.setId("123");
-    AuthenticationException ex = assertThrows(AuthenticationException.class, () -> charge.voidCharge(params, requestOptions));
+    AuthenticationException ex = assertThrows(AuthenticationException.class, () -> Charge.voidCharge(params, requestOptions));
 
     //then
     assertEquals(401, ex.getStatusCode());
@@ -48,32 +47,28 @@ class ChargeVoidTest {
   }
 
   @Test
-  void testReturns422IfTransactionIdIsInvalid() throws SPException {
+  void testReturns404IfTransactionIdIsInvalid() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    ChargeCreateParams createParams = ChargeCreateParams.builder().amount("1.00").token(VALID_TOKEN).build();
-    Charge charge = Charge.create(createParams, requestOptions);
 
     //when
     ChargeVoidParams voidParams = ChargeVoidParams.builder().transactionId("123").build();
-    ApiException ex = assertThrows(ApiException.class, () -> charge.voidCharge(voidParams, requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> Charge.voidCharge(voidParams));
 
     //then
-    assertEquals(422, ex.getStatusCode());
-    assertTrue(ex.getMessage().startsWith("Unprocessable error"));
+    assertEquals(404, ex.getStatusCode());
+    assertTrue(ex.getMessage().startsWith("Not found"));
   }
 
   @Test
   void testVoidsChargeSuccessfully() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    ChargeCreateParams createParams = ChargeCreateParams.builder().amount("1.00").token(VALID_TOKEN).build();
-    Charge charge = Charge.create(createParams, requestOptions);
+    ChargeCreateParams createParams = ChargeCreateParams.builder().amount("1.00").token(env.getValidToken()).build();
+    Charge charge = Charge.create(createParams);
     log.info("created charge=%s", charge);
 
     //when
     ChargeVoidParams voidParams = ChargeVoidParams.builder().transactionId(charge.getId()).build();
-    Charge voidedCharge = charge.voidCharge(voidParams, requestOptions);
+    Charge voidedCharge = Charge.voidCharge(voidParams);
 
     //then
     assertNotNull(voidedCharge);

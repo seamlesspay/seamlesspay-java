@@ -118,7 +118,7 @@ public class Refund extends ApiResource {
   /**
    * Date of create data
    */
-  @SerializedName("businessCard")
+  @SerializedName("createdAt")
   private LocalDateTime createdAt;
 
   /**
@@ -164,6 +164,11 @@ public class Refund extends ApiResource {
   @SerializedName("verification")
   private CreditCardVerification verification;
 
+
+  public static RefundCollection list()
+      throws SPException {
+    return list(null);
+  }
 
   public static RefundCollection list(RequestOptions options)
       throws SPException {

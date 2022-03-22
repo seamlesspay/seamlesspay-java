@@ -4,6 +4,7 @@ import com.seamlesspay.SPAPI;
 import com.seamlesspay.exception.ApiException;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.model.Order;
 import com.seamlesspay.model.ShippingAddress;
@@ -24,16 +25,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(MockitoJUnitRunner.class)
 class ChargeCreateTest {
 
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
-  public static final String VALID_TOKEN = "tok_mastercard";
+  public static final Environment env = new Environment();
 
   @InjectMocks
   private SPAPI api;
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
-    SPAPI.apiKey = DEV_API_KEY;
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
@@ -56,7 +56,7 @@ class ChargeCreateTest {
     //given
     ChargeCreateParams params = ChargeCreateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .build();
 
     //when
@@ -117,7 +117,7 @@ class ChargeCreateTest {
       .currency(USD)
       .cvv("123")
       .order(order)
-      .token(VALID_TOKEN)
+      .token(env.getValidToken())
       .build();
 
     //when

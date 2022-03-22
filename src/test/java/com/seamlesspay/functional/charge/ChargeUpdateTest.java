@@ -5,8 +5,10 @@ import com.seamlesspay.exception.ApiException;
 import com.seamlesspay.exception.AuthenticationException;
 import com.seamlesspay.exception.InvalidRequestException;
 import com.seamlesspay.exception.SPException;
+import com.seamlesspay.functional.Environment;
 import com.seamlesspay.model.Charge;
 import com.seamlesspay.net.RequestOptions;
+import com.seamlesspay.param.ChargeCreateParams;
 import com.seamlesspay.param.ChargeUpdateParams;
 import com.seamlesspay.util.SPLogger;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +23,12 @@ class ChargeUpdateTest {
 
   private static final SPLogger log = SPLogger.get();
 
-  public static final String DEV_API_KEY = "sk_01EWB3GM26X5FE81HQDJ01YK0Y";
+  public static final Environment env = new Environment();
 
   @BeforeEach
   void setUp() {
-    SPAPI.overrideApiBase(SPAPI.DEV_API_BASE);
+    SPAPI.overrideApiBase(env.getApiBase());
+    SPAPI.apiKey = env.getApiKey();
   }
 
   @Test
@@ -65,7 +68,7 @@ class ChargeUpdateTest {
     //given
     ChargeUpdateParams params = ChargeUpdateParams.builder().build();
     RequestOptions requestOptions = RequestOptions.builder()
-      .setApiKey(DEV_API_KEY + "123")
+      .setApiKey(env.getApiKey() + "123")
       .build();
 
     //when
@@ -81,13 +84,12 @@ class ChargeUpdateTest {
   @Test
   void testReturns404OnNotExistingTransactionId() {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
     ChargeUpdateParams params = ChargeUpdateParams.builder().amount("1.00").build();
 
     //when
     Charge charge = new Charge();
     charge.setId("TR_1234567890KMBYB64KRMFPQN6W");
-    ApiException ex = assertThrows(ApiException.class, () -> charge.update(params, requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> charge.update(params));
 
     //then
     assertEquals(404, ex.getStatusCode());
@@ -96,13 +98,12 @@ class ChargeUpdateTest {
   @Test
   void testReturns422IfMissingRequiredField() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    Charge existingCharge = Charge.retrieve("TR_01FVFJ0XX7KMBYB64KRMFPQN6W", requestOptions);
+    Charge existingCharge = Charge.retrieve("TR_01FY7K3QP1QMGNK48J1ZCDSPFF");
     log.info("got existing charge=%s", existingCharge);
 
     //when
     ChargeUpdateParams params = ChargeUpdateParams.builder().build();
-    ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params, requestOptions));
+    ApiException ex = assertThrows(ApiException.class, () -> existingCharge.update(params));
 
     //then
     assertEquals(422, ex.getStatusCode());
@@ -112,17 +113,22 @@ class ChargeUpdateTest {
   @Test
   void testUpdatesChargeSuccess() throws SPException {
     //given
-    RequestOptions requestOptions = RequestOptions.builder().setApiKey(DEV_API_KEY).build();
-    Charge existingCharge = Charge.retrieve("TR_01FVMZ5D1JN1HQ9JKV133B4RYQ", requestOptions);
+    ChargeCreateParams createParams = ChargeCreateParams.builder()
+      .amount("1.00")
+      .capture(false)
+      .token(env.getValidToken())
+      .build();
+    Charge createdCharge = Charge.create(createParams);
+    log.info("created charge=%s", createdCharge);
 
-    double currentAmount = Double.parseDouble(existingCharge.getAmount());
+    double currentAmount = Double.parseDouble("1.00");
     double newAmount = currentAmount + 1;
     log.info("current amount=%f new=%f", currentAmount, newAmount);
 
     //when
     String newAmountString = String.format(java.util.Locale.US, "%.2f", newAmount);
     ChargeUpdateParams params = ChargeUpdateParams.builder().amount(newAmountString).build();
-    Charge updatedCharge = existingCharge.update(params, requestOptions);
+    Charge updatedCharge = createdCharge.update(params);
 
     //then
     assertEquals(newAmountString, updatedCharge.getAmount());
