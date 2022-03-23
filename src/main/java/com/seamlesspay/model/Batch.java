@@ -64,9 +64,8 @@ public class Batch extends ApiResource {
    * @return batch found by id or null
    */
   public static Batch retrieve(String batchId, RequestOptions options) throws SPException {
-    String url = String.format("%s%s?_id=%s", SPAPI.getApiBase(), BATCHES_URL_PATH, batchId);
-    Map<String, Object> params = new HashMap<>();
-    BatchCollection batchCollection = ApiResource.requestSPCollection(url, params, BatchCollection.class, options);
+    String url = String.format("%s%s/?_id=%s", SPAPI.getApiBase(), BATCHES_URL_PATH, batchId);
+    BatchCollection batchCollection = ApiResource.requestSPCollection(url, (Map<String, Object>) null, BatchCollection.class, options);
     if (batchCollection.getTotal() != 1) {
       return null;
     }

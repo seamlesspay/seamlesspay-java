@@ -10,6 +10,9 @@ public enum TransactionStatus {
   @SerializedName("captured")
   CAPTURED,
 
+  @SerializedName("settled")
+  SETTLED,
+
   @SerializedName("declined")
   DECLINED,
 

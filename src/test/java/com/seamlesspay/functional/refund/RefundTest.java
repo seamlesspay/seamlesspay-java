@@ -10,11 +10,14 @@ import com.seamlesspay.net.RequestOptions;
 import com.seamlesspay.param.ChargeCreateParams;
 import com.seamlesspay.param.RefundCreateParams;
 import com.seamlesspay.util.SPLogger;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.seamlesspay.model.Currency.USD;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,7 +68,7 @@ class RefundTest {
   }
 
   @Test
-  void testCreateRefundSuccess() throws SPException, InterruptedException {
+  void testCreateRefundSuccess() throws SPException {
     //given
     ChargeCreateParams params = ChargeCreateParams.builder()
       .amount("1.00")
@@ -77,7 +80,10 @@ class RefundTest {
     BatchCloseResult closeBatchResult = Batch.close(charge.getBatch());
     assertNotNull(closeBatchResult);
 
-    Thread.sleep(3_000);
+    Awaitility.await()
+      .pollInterval(500, TimeUnit.MILLISECONDS)
+      .atMost(10_000, TimeUnit.MILLISECONDS)
+      .until(() -> Charge.retrieve(charge.getId()).getStatus().equals(TransactionStatus.SETTLED));
 
     //when
     RefundCreateParams refundParams = RefundCreateParams.builder().transactionID(charge.getId()).build();
@@ -86,6 +92,7 @@ class RefundTest {
 
     //then
     assertNotNull(refund);
+    Charge.retrieve(charge.getId());
   }
 
   @Test
